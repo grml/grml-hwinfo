@@ -1,0 +1,23 @@
+.TH SYSDUMP 8
+.SH NAME
+sysdump \- dump /sys to a textformat
+.SH SYNOPSIS
+.B sysdump
+.SH DESCRIPTION
+This manual page documents briefly the
+.B sysdump
+command.
+.PP
+\fBsysdump\fP is a perl script that tries to read all files in the
+sys filesystem (known as the files behind /sys) and dumps the content
+found in present files to stdout. The script is used inside grml-hwinfo.
+.SH OPTIONS
+sysdump does not support any options.
+.SH SEE ALSO
+.BR grml-hwinfo (1).
+.br
+.SH AUTHOR
+sysdump was written by David Schmitt <david@schmitt.edv-bus.at>.
+.PP
+This manual page was written by Michael Prokop <mika@grml.org>
+for the grml project (but may be used by others).

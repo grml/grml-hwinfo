@@ -62,7 +62,7 @@ sub dump_value($$)
 	my $level = shift;
 	my $file = shift;
 
-	open (FILE, "<$file") || die "can't open $file: $!";
+	open (FILE, "<$file") || print "can't open $file: $!";
 
 	my $value;
 	{	local $/;

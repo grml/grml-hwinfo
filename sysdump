@@ -1,0 +1,90 @@
+#!/usr/bin/perl
+#
+#    sysdump - dump /sys to a textformat
+#
+#    Copyright 2005 David Schmitt <david@schmitt.edv-bus.at>
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+# 
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+# 
+#    You should have received a copy of the GNU General Public License
+#    along with this program; if not, write to the Free Software
+#    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#	Version 0.1: Initial prototype
+#
+
+use warnings;
+use strict;
+
+$| = 1;
+
+#my $basedir = `systool -m`;
+#chomp $basedir;
+my $basedir = '/sys';
+
+sub dump_dir($$)
+{
+	my $level = shift;
+	my $dir = shift;
+
+	opendir(DIR, $dir) || die "can't opendir $dir: $!";
+	my @entries = grep { !/^\.\.?/ } readdir(DIR);
+	closedir(DIR);
+
+	#print " "x$level;
+	print $dir, ":\n";
+
+	foreach my $entry (sort @entries)
+	{
+		dump_entry($level + 1, "$dir/$entry");
+	}
+}
+
+sub dump_link($$)
+{
+	my $level = shift;
+	my $link = shift;
+
+	#print " "x$level;
+	print $link, " -> ", readlink($link), "\n";
+}
+
+sub dump_value($$)
+{
+	my $level = shift;
+	my $file = shift;
+
+	open (FILE, "<$file") || die "can't open $file: $!";
+
+	my $value;
+	{	local $/;
+		$value = <FILE>;
+		$value = defined($value)?$value:"undef";
+	}
+	chomp $value;
+	close FILE;
+
+	#print " "x$level;
+	print $file, " = '", $value, "'\n";
+}
+
+sub dump_entry($$)
+{
+	my $level = shift;
+	my $file = shift;
+
+	return dump_link($level, $file) if -l $file;
+	return dump_dir($level, $file) if -d $file;
+	return dump_value($level, $file) if -r $file;
+}
+
+dump_dir(0, $basedir);
+

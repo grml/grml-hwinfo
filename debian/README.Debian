@@ -1,0 +1,8 @@
+grml-hwinfo for Debian
+----------------------
+
+Notice that dependencies are minimal so it's possible to use
+grml-hwinfo also with a very minimalistic setup. Just install all
+suggests/recommends to get a full featured grml-hwinfo.
+
+ -- Michael Prokop <mika@grml.org>, Thu, 28 Jul 2005 08:50:04 +0200

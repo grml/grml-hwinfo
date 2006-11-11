@@ -1,0 +1,36 @@
+grml-hwinfo (0.3-1) unstable; urgency=low
+
+  * Fix: append output of for-loop to files (avoids possible
+    overwriting of files).
+
+ -- Michael Prokop <mika@grml.org>  Thu, 10 Aug 2006 00:17:59 +0200
+
+grml-hwinfo (0.2-3) unstable; urgency=low
+
+  * Send errors from sfdisk and fdisk to an error file as
+    unpartitioned disks report errors.
+  * It's linux-image-... and not kernel-image... anymore.
+
+ -- Michael Prokop <mika@grml.org>  Thu,  6 Apr 2006 16:04:51 +0200
+
+grml-hwinfo (0.2-2) unstable; urgency=low
+
+  * Check for existence of /proc/ide/ide?/hd?/geometry before
+    grepping.
+
+ -- Michael Prokop <mika@grml.org>  Tue,  4 Apr 2006 23:41:04 +0200
+
+grml-hwinfo (0.2-1) unstable; urgency=low
+
+  * Fixed the "not running as root" problem.
+  * Send error/warning output of sysdump to sysdump.error.
+  * Changed pcmcia-cs in Suggested: to pcmcia-utils.
+
+ -- Michael Prokop <mika@grml.org>  Mon,  3 Apr 2006 22:23:31 +0200
+
+grml-hwinfo (0.1-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Michael Prokop <mika@grml.org>  Thu, 28 Jul 2005 08:50:04 +0200
+

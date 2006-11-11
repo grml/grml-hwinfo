@@ -1,0 +1,197 @@
+#!/bin/sh
+# Filename:      grml-hwinfo
+# Purpose:       get hardware information
+# Authors:       grml-team (grml.org), (c) Michael Prokop <mika@grml.org>
+# Bug-Reports:   see http://grml.org/bugs/
+# License:       This file is licensed under the GPL v2.
+# Latest change: Don Aug 10 00:17:56 CEST 2006 [mika]
+################################################################################
+# Notice: Some ideas have been taken from
+# http://club.black.co.at/david/hwdb/infodump
+# by David Schmitt <david@schmitt.edv-bus.at>
+################################################################################
+
+# variables
+UNAME=$(uname -r)
+PN=$(basename $0)
+VERSION='0.2'
+if [[ -z "$INFOFILE" ]]; then
+  INFOFILE='info.tar.bz2'
+fi
+
+# echo a list of all disks and their size
+# taken from http://cvs.debian.org/fai/lib/disk-info
+function diskandsize() {
+    local isdisk major minor blocks device suffix
+    while read major minor blocks device suffix; do
+        isdisk=1
+        # skip ide cdrom
+        [ -f /proc/ide/$device/media ] && grep -q cdrom /proc/ide/$device/media && isdisk=0
+        [ $isdisk -eq 1 ] && echo "$device $blocks"
+    done
+}
+
+function list_disks() {
+# print only every second entry; used by disk_info
+i=0
+for ent in $@; do
+    if [ $i -eq 0 ]; then
+        echo $ent
+        i=1
+    else
+        i=0
+    fi
+done
+}
+
+function disk_info() {
+    # the variable holds a space separated list of devices and their block size
+    device_size=`grep -E ' cciss/c.d.$| ida/c.d.$| rd/c.d.$| hd.$| sd.$|/disc$' /proc/partitions | diskandsize`
+# grep -E ' cciss/c.d.\b| ida/c.d.\b| rd/c.d.\b| hd.\b| sd.\b|/disc\b' /proc/partitions | diskandsize
+
+    # a list of all local disks, without size
+    disklist=`list_disks $device_size`
+}
+
+echo "Running grml-hwinfo ${VERSION} - collecting hardware information."
+echo "Please send feedback, bugreports, feature requests to Michael Prokop <mika@grml.org>."
+echo ""
+
+mkdir info || exit -1
+(
+  cd info
+
+  echo "Generating hardware information report using file $INFOFILE."
+  echo "This might take a few seconds/minutes. Please be patient..."
+
+# some sysinfo
+  date > date
+  if [ -r /etc/grml_version ] ; then
+    cat /etc/grml_version > grml_version
+  else
+    echo "This does not seem to be a grml system. Continuing anyway..."
+  fi
+  cat /etc/debian_version > debian_version
+  uname -a > uname
+
+# disks / devices
+  [ -f /proc/scsi/scsi ] && cat /proc/scsi/scsi > scsi
+  (lspci; lspci -n) | sort > lspci
+  [ -r /proc/bus/pnp ] && lspnp > lspnp
+  [ -r /proc/bus/usb ] && lsusb > lsusb
+  cat /proc/partitions > partitions
+  [ -r /proc/ide/ide?/hd?/geometry ] && grep . /proc/ide/ide?/hd?/geometry /dev/null | sed -e 's#/proc/ide/ide./##' > proc_ide
+  df -h > df 2>/dev/null
+  for i in free lsmod mount lsdev ; do
+    $i > $i
+  done
+
+# proc stuff
+  for i in cpuinfo interrupts cmdline devices dma fb iomem ioports \
+    mdstat meminfo modules mtrr pci version ; do
+    [ -r /proc/$i ] && cat /proc/$i > proc_$i
+  done
+  [[ -x `which sysdump` ]] && sysdump > sysdump 2>sysdump.error
+# for sysnet in `find /proc/sys/net/*/ -type f | grep -v flush`; do cat $sysnet >> sysnet ; done
+
+# log
+  dmesg > dmesg.cur
+
+# hwinfo
+  [[ -x `which discover` ]] && discover -v --type-summary --enable-bus all > discover 2> discover.2
+  [[ -x `which hwinfo` ]] && hwinfo log=hwinfo
+
+# net stuff
+  [[ -x `which ifconfig` ]] && ifconfig -v -a  > ifconfig
+  [[ -x `which ip` ]] && ip route show   > ip_route
+  [[ -x `which ip` ]] && ip link show    > ip_link
+  [[ -x `which route` ]] && route -n        > route
+
+# software
+  dpkg --get-selections   > dpkg_get_selections
+  COLUMNS=300 dpkg --list > dpkg_list
+  COLUMNS=1000 dpkg -l linux-image-$UNAME | grep linux-image-$UNAME | tr -s ' ' > running_kernel
+
+# powermanagement
+  [[ -x `which laptop-detect` ]] && laptop-detect 1>/dev/null 2>/dev/null && echo "0" > laptop_detected
+  [[ -x `which acpi_available` ]] && acpi_available && cat /proc/acpi/info > acpi_info
+  [[ -x `which acpi` ]] && acpi > acpi 2> acpi.error && acpi -v > acpi.version
+  [ -r /proc/apm/  ]  && apm > acpi
+
+# kernel stuff
+  if [ -r /proc/config.gz ] ; then
+    zcat /proc/config.gz > kernelconfig
+  else
+    [ -r /boot/config-$UNAME ] && cat /boot/config-$UNAME > kernelconfig
+  fi
+
+# X stuff
+  if [ -n "${DISPLAY}" ] ; then
+    [[ -x `which xviddetect` ]] && xviddetect         > xviddetect
+    [[ -x `which xvidtune`   ]] && xvidtune -show     > xdivtune
+    [[ -x `which xrandr`     ]] && xrandr             > xrandr
+    [[ -x `which xdpyinfo`   ]] && xdpyinfo           > xdpyinfo
+    X -version        1> x_version 2>&1
+  fi
+
+  for i in Xorg.0.log Xorg.7.log Xorg.8.log XFree86.0.log XFree86.7.log XFree86.8.log dmesg ; do
+    cp /var/log/$i log_$i 2>/dev/null
+  done
+
+  cp /etc/X11/xorg.conf    xorg.conf    2>/dev/null
+  cp /etc/modules          modules      2>/dev/null
+  cp /etc/X11/XF86Config-4 XF86Config-4 2>/dev/null
+
+# not available:
+# sysinfo -class device -level all
+
+# as root:
+if [ $UID != 0 ] ; then
+  echo "not running as root" > root
+  NOTROOT="yes"
+else
+  echo "running as root" > root
+  disk_info
+  [[ -x `which sfdisk`    ]] && sfdisk -d > sfdisk 2>sfdisk.error
+  [[ -x `which ddcprobe`  ]] && ddcprobe  > ddcprobe
+  [[ -x `which dmidecode` ]] && dmidecode > dmidecode
+  for disk in $disklist; do
+     [[ -x `which smartctl` ]] && smartctl -i /dev/$disk >> smartctl
+     [[ -x `which hdparm`   ]] && hdparm -iv /dev/$disk  >> hdparm
+     [[ -x `which fdisk`    ]] && fdisk -lu /dev/$disk   >> fdisk 2>>fdisk.error
+     [[ -x `which parted`   ]] && parted -s /dev/$disk print >> parted
+     LC_ALL=C file -s /dev/$disk?* | grep -v ": empty" >> file_disk
+  done
+fi
+)
+
+tar jcf $INFOFILE info/ && rm -Rf info/
+
+echo ""
+[ -n "$NOTROOT" ]  && echo "Notice: you are running $PN without root permissions! Not all information could be collected!"
+echo ""
+[ -r "$INFOFILE" ] && echo "$INFOFILE ($(ls -ahl $INFOFILE | awk '{print $5}')) has been generated."
+echo ""
+
+#echo ""
+#echo 'Thanks for collecting this information!'
+#echo ""
+#echo "Please fill out this form and send it together with $INFOFILE ($(ls -ahl $INFOFILE | awk '{print $5}')) to"
+#echo "  Michael Prokop <mika@grml.org>"
+#echo ""
+#
+#cat <<EOF
+#Class: <Laptop/Desktop/Server/built-to-order/self-assembled>
+#Manufacturer:
+#Model:
+#Distributor: <Where did you buy it>
+#Bought in: <Country and Date>
+#
+#Components/Options: <If the PC was built-to-order or self assembled, please
+#        list the options or components you used>
+#
+#Additional Notes:
+#
+#EOF
+
+## END OF FILE##################################################################

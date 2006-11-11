@@ -3,10 +3,10 @@ Section: grml
 Priority: optional
 Maintainer: Michael Prokop <mika@grml.org>
 Build-Depends: debhelper (>= 4.0.0)
-Standards-Version: 3.6.2
+Standards-Version: 3.7.2
 
 Package: grml-hwinfo
-Architecture: any
+Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, sysfsutils
 Suggests: hwinfo, usbutils, pcmcia-utils, net-tools, iproute, powermgmt-base, acpi, xviddetect, xbase-clients, xresprobe, dmidecode, hdparm, parted-bf, smartmontools,
 Conflicts: grml-scripts (<= 0.4-15)

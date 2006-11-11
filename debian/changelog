@@ -1,3 +1,11 @@
+grml-hwinfo (0.3-2) unstable; urgency=low
+
+  * Use "Architecture: all" in debian/control to support architectures
+    not running on x86 as well.
+  * Bumb Standard Version to 3.7.2 (no further changes). 
+
+ -- Michael Prokop <mika@grml.org>  Sat, 11 Nov 2006 19:12:39 +0100
+
 grml-hwinfo (0.3-1) unstable; urgency=low
 
   * Fix: append output of for-loop to files (avoids possible

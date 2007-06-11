@@ -3,6 +3,8 @@ grml-hwinfo (0.3-3) unstable; urgency=low
   [Michael Prokop]
   * Improve code layout (like checks for binaries, portability for
     non-grml system).
+  * Do not overwrite existing info.tar.bz2 files but use timestamp
+    in filename instead.
 
   [Alexander Wirt]
   * Add procinfo to suggests.

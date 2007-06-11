@@ -4,7 +4,7 @@
 # Authors:       grml-team (grml.org), (c) Michael Prokop <mika@grml.org>
 # Bug-Reports:   see http://grml.org/bugs/
 # License:       This file is licensed under the GPL v2.
-# Latest change: Mon Jun 11 12:05:32 CEST 2007 [mika]
+# Latest change: Mon Jun 11 12:15:04 CEST 2007 [mika]
 ################################################################################
 # Notice: Some ideas have been taken from
 # http://club.black.co.at/david/hwdb/infodump
@@ -12,12 +12,12 @@
 ################################################################################
 
 # variables
-UNAME=$(uname -r)
-PN=$(basename $0)
+UNAME="$(uname -r)"
+PN="$(basename $0)"
 VERSION='0.3'
-if [ -z "$INFOFILE" ]; then
-   INFOFILE='info.tar.bz2'
-fi
+
+[ -n "$INFOFILE" ] || INFOFILE='info.tar.bz2'
+
 
 if [ "$(id -u)" != 0 ] ; then
    NOTROOT=1
@@ -181,7 +181,14 @@ fi
 )
 
 # finally create the tarball
-tar jcf $INFOFILE info/ && rm -Rf info/
+if [ -f "$INFOFILE" ] ; then
+   DATE="$(date +%Y%m%d_%H:%M:%S)"
+   INFOFILE="info_$DATE.tar.bz2"
+   echo "Warning:  $INFOFILE exists already, using $INFOFILE instead.">&1
+   tar jcf $INFOFILE info/ && rm -Rf info/
+else
+   tar jcf $INFOFILE info/ && rm -Rf info/
+fi
 
 echo
 [ -r "$INFOFILE" ] && echo "$INFOFILE ($(ls -ahl $INFOFILE | awk '{print $5}')) has been generated."

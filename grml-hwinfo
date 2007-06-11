@@ -130,9 +130,9 @@ mkdir info || exit -1
 
 # powermanagement
   exectest laptop-detect  && laptop-detect 1>/dev/null 2>/dev/null && echo "0" > laptop_detected
-  exectest acpi_available  && acpi_available && cat /proc/acpi/info > acpi_info
-  exectest acpi  && acpi > acpi 2> acpi.error && acpi -v > acpi.version
-  [ -r /proc/apm/  ]  && apm > acpi
+  exectest acpi_available && acpi_available && cat /proc/acpi/info > acpi_info
+  exectest acpi && acpi > acpi 2> acpi.error && acpi -v > acpi.version
+  [ -r /proc/apm/ ] && apm > apm
 
 # kernel stuff
   if [ -r /proc/config.gz ] ; then

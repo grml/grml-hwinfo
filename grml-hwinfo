@@ -83,7 +83,7 @@ mkdir info || exit -1
   [ -r /proc/ide/ide?/hd?/geometry ] && grep . /proc/ide/ide?/hd?/geometry /dev/null | sed -e 's#/proc/ide/ide./##' > proc_ide
   df -h > df 2>/dev/null
   for i in free lsmod mount lsdev ; do
-    $i > $i
+    [[ -x `which $i` ]] && $i > $i
   done
 
 # proc stuff

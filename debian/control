@@ -8,7 +8,7 @@ Standards-Version: 3.7.2
 Package: grml-hwinfo
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, sysfsutils
-Suggests: hwinfo, usbutils, pcmcia-utils, net-tools, iproute, powermgmt-base, acpi, xviddetect, xbase-clients, xresprobe, dmidecode, hdparm, parted-bf, smartmontools,
+Suggests: hwinfo, usbutils, pcmcia-utils, net-tools, iproute, powermgmt-base, acpi, xviddetect, xbase-clients, xresprobe, dmidecode, hdparm, parted-bf, smartmontools, procinfo
 Conflicts: grml-scripts (<= 0.4-15)
 Description: collect hardware information
  This tool collects information regarding hardware.  It can be

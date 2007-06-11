@@ -1,3 +1,10 @@
+grml-hwinfo (0.3-3) unstable; urgency=low
+
+  * Add procinfo to suggests
+  * Fix output if some optional packages are not installed
+
+ -- Alexander Wirt <formorer@grml.org>  Mon, 11 Jun 2007 11:47:08 +0200
+
 grml-hwinfo (0.3-2) unstable; urgency=low
 
   * Use "Architecture: all" in debian/control to support architectures

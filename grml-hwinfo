@@ -94,7 +94,7 @@ mkdir info || exit -1
   [ -r /proc/bus/pnp ] && lspnp > lspnp
   [ -r /proc/bus/usb ] && lsusb > lsusb
   cat /proc/partitions > partitions
-  [ -r /proc/ide/ide?/hd?/geometry ] && grep . /proc/ide/ide?/hd?/geometry /dev/null | sed -e 's#/proc/ide/ide./##' > proc_ide
+  find /proc/ide/ -name geometry -exec grep . {} \; > proc_ide 2>/dev/null
   df -h > df 2>/dev/null
   for i in free lsmod mount lsdev ; do
       exectest $i  && $i > $i

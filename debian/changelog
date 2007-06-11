@@ -1,3 +1,14 @@
+grml-hwinfo (0.3-3) unstable; urgency=low
+
+  [Michael Prokop]
+  * Improve code layout (like checks for binaries, portability for
+    non-grml system).
+
+  [Alexander Wirt]
+  * Add procinfo to suggests.
+
+ -- Michael Prokop <mika@grml.org>  Mon, 11 Jun 2007 12:06:28 +0200
+
 grml-hwinfo (0.3-2) unstable; urgency=low
 
   * Use "Architecture: all" in debian/control to support architectures

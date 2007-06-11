@@ -21,7 +21,7 @@ VERSION='0.3'
 
 if [ "$(id -u)" != 0 ] ; then
    NOTROOT=1
-   echo "Notice: you are running $PN without root permissions! Not all information could be collected!"
+   echo "Notice: you are running $PN without root permissions. Not all information will be collected."
    echo
 fi
 
@@ -182,10 +182,12 @@ fi
 
 # finally create the tarball
 if [ -f "$INFOFILE" ] ; then
-   DATE="$(date +%Y%m%d_%H:%M:%S)"
-   INFOFILE="info_$DATE.tar.bz2"
-   echo "Warning:  $INFOFILE exists already, using $INFOFILE instead.">&1
-   tar jcf $INFOFILE info/ && rm -Rf info/
+   DATE="$(date +%Y%m%d_%H%M%S)"
+   NEW_INFOFILE="info_$DATE.tar.bz2"
+   echo
+   echo "Warning:  $INFOFILE exists already, using $NEW_INFOFILE instead.">&2
+   tar jcf $NEW_INFOFILE info/ && rm -Rf info/
+   INFOFILE="$NEW_INFOFILE" # adjust variable for final info message
 else
    tar jcf $INFOFILE info/ && rm -Rf info/
 fi

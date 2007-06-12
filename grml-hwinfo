@@ -4,7 +4,7 @@
 # Authors:       grml-team (grml.org), (c) Michael Prokop <mika@grml.org>
 # Bug-Reports:   see http://grml.org/bugs/
 # License:       This file is licensed under the GPL v2.
-# Latest change: Mon Jun 11 12:15:04 CEST 2007 [mika]
+# Latest change: Die Jun 12 18:44:00 CEST 2007 [mika]
 ################################################################################
 # Notice: Some ideas have been taken from
 # http://club.black.co.at/david/hwdb/infodump
@@ -114,6 +114,7 @@ mkdir info || exit -1
 # hwinfo
   exectest discover && discover -v --type-summary --enable-bus all > discover 2> discover.2
   exectest hwinfo   && hwinfo log=hwinfo
+  exectest x86info  && x86info > x86info 2>x86info.2
 
 # net stuff
   exectest ifconfig  && ifconfig -v -a  > ifconfig

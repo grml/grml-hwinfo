@@ -1,3 +1,9 @@
+grml-hwinfo (0.3.5) unstable; urgency=low
+
+  * Support /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl
+
+ -- Michael Prokop <mika@grml.org>  Mon, 20 Aug 2007 11:23:40 +0200
+
 grml-hwinfo (0.3.4) unstable; urgency=low
 
   * Support x86info.

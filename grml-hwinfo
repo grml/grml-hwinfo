@@ -4,7 +4,7 @@
 # Authors:       grml-team (grml.org), (c) Michael Prokop <mika@grml.org>
 # Bug-Reports:   see http://grml.org/bugs/
 # License:       This file is licensed under the GPL v2.
-# Latest change: Mon Aug 20 11:23:37 CEST 2007 [mika]
+# Latest change: Mon Aug 27 18:32:27 CEST 2007 [mika]
 ################################################################################
 # Notice: Some ideas have been taken from
 # http://club.black.co.at/david/hwdb/infodump
@@ -171,6 +171,8 @@ else
    exectest sfdisk     && sfdisk -d > sfdisk 2>sfdisk.error
    exectest ddcprobe   && ddcprobe  > ddcprobe
    exectest dmidecode  && dmidecode > dmidecode
+
+   exectest dconf && dconf -o dconf
 
    if [ -x /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl ] ; then
       /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl > decode-dimms 2>decode-dimms.error

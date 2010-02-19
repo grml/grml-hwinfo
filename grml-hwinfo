@@ -4,7 +4,6 @@
 # Authors:       grml-team (grml.org), (c) Michael Prokop <mika@grml.org>
 # Bug-Reports:   see http://grml.org/bugs/
 # License:       This file is licensed under the GPL v2.
-# Latest change: Mon Aug 27 18:32:27 CEST 2007 [mika]
 ################################################################################
 # Notice: Some ideas have been taken from
 # http://club.black.co.at/david/hwdb/infodump
@@ -14,12 +13,33 @@
 # variables
 UNAME="$(uname -r)"
 PN="$(basename $0)"
-VERSION='0.3'
+WORKING_DIR=$(pwd)
+VERSION='0.4'
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ] ; then
+  echo "$PN - collect hardware information
+
+This tool collects information of the hardware this tool is being executed
+on.  It can be executed as normal user to collect some basic information or
+with root permissions to collect as much information as possible. A file
+named info.tar.bz2 storing all collected information will be created in the
+current working directory."
+
+  exit 0
+fi
+
+TMPDIR=$(mktemp -d) || { echo "Error creating a temporary directory, can not continue. Exiting.">&2 ; exit 1; }
+INFODIR="info"
+
+bailout() {
+  [ -d "$TMPDIR" ] && rm -rf "$TMPDIR"
+  [ -n "$1" ] && exit 1 || exit 0
+}
 
 [ -n "$INFOFILE" ] || INFOFILE='info.tar.bz2'
+INFOFILE="${WORKING_DIR}/${INFOFILE}"
 
-
-if [ "$(id -u)" != 0 ] ; then
+if [ "$(id -u)" != "0" ] ; then
    NOTROOT=1
    echo "Notice: you are running $PN without root permissions. Not all information will be collected."
    echo
@@ -30,7 +50,7 @@ exectest() {
 if [ -z "$1" ] ; then
    echo 'Usage: exectest <binary>'>&2
    return 1
-else 
+else
    test -e "$(which $1)" && return 0 || return 1
 fi
 }
@@ -68,12 +88,11 @@ disk_info() {
 }
 
 echo "Running grml-hwinfo ${VERSION} - collecting hardware information."
-echo "Please send feedback, bugreports, feature requests to Michael Prokop <mika@grml.org>."
-echo ""
 
-mkdir info || exit -1
+mkdir "${TMPDIR}/${INFODIR}"
+cd "${TMPDIR}/${INFODIR}" || bailout 1
 (
-  cd info
+  cd "${TMPDIR}/${INFODIR}"
 
   echo "Generating hardware information report using file $INFOFILE."
   echo "This might take a few seconds/minutes. Please be patient..."
@@ -130,7 +149,7 @@ mkdir info || exit -1
   fi
 
 # powermanagement
-  exectest laptop-detect  && laptop-detect 1>/dev/null 2>/dev/null && echo "0" > laptop_detected
+  exectest laptop-detect  && laptop-detect >/dev/null 2>/dev/null && echo "0" > laptop_detected
   exectest acpi_available && acpi_available && cat /proc/acpi/info > acpi_info
   exectest acpi && acpi > acpi 2> acpi.error && acpi -v > acpi.version
   [ -r /proc/apm/ ] && apm > apm
@@ -148,7 +167,7 @@ mkdir info || exit -1
      exectest xvidtune    && xvidtune -show     > xdivtune
      exectest xrandr      && xrandr             > xrandr
      exectest xdpyinfo    && xdpyinfo           > xdpyinfo
-     X -version        1> x_version 2>&1
+     X -version > x_version 2>&1
   fi
 
   for i in Xorg.0.log Xorg.7.log Xorg.8.log XFree86.0.log XFree86.7.log XFree86.8.log dmesg ; do
@@ -189,19 +208,22 @@ fi
 )
 
 # finally create the tarball
-if [ -f "$INFOFILE" ] ; then
+if [ -f "${INFOFILE}" ] ; then
    DATE="$(date +%Y%m%d_%H%M%S)"
-   NEW_INFOFILE="info_$DATE.tar.bz2"
+   NEW_INFOFILE="${WORKING_DIR}/info_${DATE}.tar.bz2"
    echo
-   echo "Warning:  $INFOFILE exists already, using $NEW_INFOFILE instead.">&2
-   tar jcf $NEW_INFOFILE info/ && rm -Rf info/
+   echo "Warning: $INFOFILE exists already, using $NEW_INFOFILE instead.">&2
    INFOFILE="$NEW_INFOFILE" # adjust variable for final info message
-else
-   tar jcf $INFOFILE info/ && rm -Rf info/
 fi
+
+cd "${TMPDIR}"
+tar jcf "${INFOFILE}" "${INFODIR}"
+cd "${WORKING_DIR}"
 
 echo
 [ -r "$INFOFILE" ] && echo "$INFOFILE ($(ls -ahl $INFOFILE | awk '{print $5}')) has been generated."
 echo
+
+bailout
 
 ## END OF FILE##################################################################

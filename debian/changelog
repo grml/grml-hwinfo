@@ -1,3 +1,12 @@
+grml-hwinfo (0.4.0) unstable; urgency=low
+
+  * Collect hardware information in a temporary directory.
+  * Support -h/--help option.
+  * Bump Standards-Version to 3.8.4 (no further changes).
+  * Update Homepage/VCS-* headers.
+
+ -- Michael Prokop <mika@grml.org>  Fri, 19 Feb 2010 21:26:50 +0100
+
 grml-hwinfo (0.3.6) unstable; urgency=low
 
   * Support dconf.

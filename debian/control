@@ -3,10 +3,10 @@ Section: admin
 Priority: optional
 Maintainer: Michael Prokop <mika@grml.org>
 Build-Depends: debhelper (>= 4.0.0)
-Standards-Version: 3.7.2
-Homepage: http://hg.grml.org/grml-hwinfo/
-XS-Vcs-hg: http://hg.grml.org/grml-hwinfo/
-XS-Vcs-Browser: http://hg.grml.org/grml-hwinfo/
+Standards-Version: 3.8.4
+Homepage: http://git.grml.org/?p=grml-hwinfo.git
+Vcs-git: git://git.grml.org/grml-hwinfo.git
+Vcs-Browser: http://git.grml.org/?p=grml-hwinfo.git
 
 Package: grml-hwinfo
 Architecture: all
@@ -14,8 +14,9 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, sysfsutils
 Suggests: hwinfo, usbutils, pcmcia-utils, net-tools, iproute, powermgmt-base, acpi, xviddetect, xbase-clients, xresprobe, dmidecode, hdparm, parted-bf, smartmontools, procinfo
 Conflicts: grml-scripts (<= 0.4-15)
 Description: collect hardware information
- This tool collects information regarding hardware.  It can be
- run as normal user to collect some basic information or with
- root permissions to collect as much information as possible. A
- file named info.tar.bz2 will be created in the current directory
- where all information is collected.
+ This tool collects information of the hardware this tool is
+ being executed on.  It can be executed as normal user to collect
+ some basic information or with root permissions to collect as
+ much information as possible. A file named info.tar.bz2 storing
+ all collected information will be created in the current working
+ directory.

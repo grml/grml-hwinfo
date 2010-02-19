@@ -33,12 +33,12 @@ install: build
 	install -m 755 grml-hwinfo $(CURDIR)/debian/grml-hwinfo/usr/bin/
 	install -m 755 sysdump     $(CURDIR)/debian/grml-hwinfo/usr/bin/
 
-# Build architecture-independent files here.
-binary-indep: build install
-# We have nothing to do by default.
-
 # Build architecture-dependent files here.
 binary-arch: build install
+# We have nothing to do by default.
+
+# Build architecture-independent files here.
+binary-indep: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 

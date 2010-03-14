@@ -1,3 +1,9 @@
+grml-hwinfo (0.4.1) UNRELEASED; urgency=low
+
+  * Specify output dirctory via WORKING_DIR variable 
+
+ -- Ulrich Dangel <mru@grml.org>  Sun, 14 Mar 2010 14:28:43 +0100
+
 grml-hwinfo (0.4.0) unstable; urgency=low
 
   * Collect hardware information in a temporary directory.

@@ -13,8 +13,8 @@
 # variables
 UNAME="$(uname -r)"
 PN="$(basename $0)"
-WORKING_DIR=$(pwd)
-VERSION='0.4'
+[ -n "$WORKING_DIR" -a -d "$WORKING_DIR" ] || WORKING_DIR=$(pwd)
+VERSION='0.4.1'
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ] ; then
   echo "$PN - collect hardware information
@@ -221,7 +221,7 @@ tar jcf "${INFOFILE}" "${INFODIR}"
 cd "${WORKING_DIR}"
 
 echo
-[ -r "$INFOFILE" ] && echo "$INFOFILE ($(ls -ahl $INFOFILE | awk '{print $5}')) has been generated."
+[ -r "$INFOFILE" ] && echo "$INFOFILE ("$(ls -ahl "$INFOFILE" | awk '{print $5}')") has been generated."
 echo
 
 bailout

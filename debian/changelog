@@ -1,8 +1,12 @@
-grml-hwinfo (0.4.1) UNRELEASED; urgency=low
+grml-hwinfo (0.4.1) unstable; urgency=low
 
-  * Specify output dirctory via WORKING_DIR variable 
+  [ Ulrich Dangel ]
+  * [1de5818] Change WORKING_DIR via external variable.
 
- -- Ulrich Dangel <mru@grml.org>  Sun, 14 Mar 2010 14:28:43 +0100
+  [ Michael Prokop ]
+  * [6046cf4] Bump Standards-Version to 3.9.1.
+
+ -- Michael Prokop <mika@grml.org>  Fri, 17 Sep 2010 00:23:53 +0200
 
 grml-hwinfo (0.4.0) unstable; urgency=low
 
@@ -51,7 +55,7 @@ grml-hwinfo (0.3-2) unstable; urgency=low
 
   * Use "Architecture: all" in debian/control to support architectures
     not running on x86 as well.
-  * Bumb Standard Version to 3.7.2 (no further changes). 
+  * Bumb Standard Version to 3.7.2 (no further changes).
   * Update copyright file (adjusted address of fsfs).
   * Added manpage for sysdump.
   * sysdump: do not exit on error opening file(s) but print warning

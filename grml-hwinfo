@@ -15,18 +15,46 @@ UNAME="$(uname -r)"
 PN="$(basename $0)"
 [ -n "$WORKING_DIR" -a -d "$WORKING_DIR" ] || WORKING_DIR=$(pwd)
 VERSION='0.4.1'
+TIMESTAMP='+%F--%H-%M-%S-%Z'
+TIMESTAMP_NANO='+%F--%H-%M-%S-%N-%Z'
 
-if [ "$1" = "-h" ] || [ "$1" = "--help" ] ; then
-  echo "$PN - collect hardware information
+GENERATE_FILE=1
+GENERATE_DIRECTORY=0
+
+while getopts "hdf" args; do
+  case "$args" in
+  h) echo "$PN - collect hardware information
 
 This tool collects information of the hardware this tool is being executed
 on.  It can be executed as normal user to collect some basic information or
-with root permissions to collect as much information as possible. A file
-named info.tar.bz2 storing all collected information will be created in the
-current working directory."
+with root permissions to collect as much information as possible.  By
+default, a file named grml-hwinfo-TIMESTAMP.tar.bz2 storing all collected
+information will be created in the current working directory. Alternatively,
+you can have it create a directory with all information.
 
-  exit 0
-fi
+Options:
+
+-h  :  Display this help
+-f  :  Create grml-hwinfo-TIMESTAMP.tar.bz2
+-d  :  Create grml-hwinfo-TIMESTAMP/
+
+-fd :  Create both a file and a directory
+"
+
+  exit 0;;
+
+  d)
+  GENERATE_FILE=0
+  GENERATE_DIRECTORY=1
+  ;;
+
+  f) # generating file; default behaviour
+  GENERATE_FILE=1
+  ;;
+
+  esac
+  done
+
 
 TMPDIR=$(mktemp -d) || { echo "Error creating a temporary directory, can not continue. Exiting.">&2 ; exit 1; }
 INFODIR="info"
@@ -36,8 +64,11 @@ bailout() {
   [ -n "$1" ] && exit 1 || exit 0
 }
 
-[ -n "$INFOFILE" ] || INFOFILE='info.tar.bz2'
+DATE="$(date $TIMESTAMP)"
+[ -n "$INFOFILE" ] || INFOFILE="grml-hwinfo-$DATE.tar.bz2"
 INFOFILE="${WORKING_DIR}/${INFOFILE}"
+[ -n "$INFOOUTDIR" ] || INFOOUTDIR="grml-hwinfo-$DATE"
+INFOOUTDIR="${WORKING_DIR}/${INFOOUTDIR}"
 
 if [ "$(id -u)" != "0" ] ; then
    NOTROOT=1
@@ -94,7 +125,8 @@ cd "${TMPDIR}/${INFODIR}" || bailout 1
 (
   cd "${TMPDIR}/${INFODIR}"
 
-  echo "Generating hardware information report using file $INFOFILE."
+  [ "$GENERATE_FILE" -gt 0 ] &&  echo "Generating hardware information report using file $INFOFILE."
+  [ "$GENERATE_DIRECTORY" -gt 0 ] &&  echo "Generating hardware information report using file $INFOOUTDIR."
   echo "This might take a few seconds/minutes. Please be patient..."
 
 # some sysinfo
@@ -148,7 +180,7 @@ cd "${TMPDIR}/${INFODIR}" || bailout 1
      COLUMNS=1000 dpkg -l linux-image-$UNAME | grep linux-image-$UNAME | tr -s ' ' > running_kernel
   fi
 
-# powermanagement
+# power management
   exectest laptop-detect  && laptop-detect >/dev/null 2>/dev/null && echo "0" > laptop_detected
   exectest acpi_available && acpi_available && cat /proc/acpi/info > acpi_info
   exectest acpi && acpi > acpi 2> acpi.error && acpi -v > acpi.version
@@ -198,31 +230,52 @@ else
    fi
 
    for disk in $disklist; do
-      exectest smartctl  && smartctl -i /dev/$disk >> smartctl
-      exectest hdparm    && hdparm -iv /dev/$disk  >> hdparm
-      exectest fdisk     && fdisk -lu /dev/$disk   >> fdisk 2>>fdisk.error
-      exectest parted    && parted -s /dev/$disk print >> parted
+      exectest smartctl  && echo "smartctl -a /dev/$disk :\n" >> smartctl && smartctl -a /dev/$disk       >> smartctl             && echo "\n\n" >> smartctl
+      exectest hdparm    && echo "hdparm -iv  /dev/$disk :\n" >> hdparm   && hdparm -iv  /dev/$disk       >> hdparm               && echo "\n\n" >> hdparm
+      exectest fdisk     && echo "fdisk -lu   /dev/$disk :\n" >> fdisk    && fdisk -lu   /dev/$disk       >> fdisk 2>>fdisk.error && echo "\n\n" >> fdisk
+      exectest parted    && echo "parted -s   /dev/$disk :\n" >> parted   && parted -s   /dev/$disk print >> parted               && echo "\n\n" >> parted
       LC_ALL=C file -s /dev/$disk?* | grep -v ": empty" >> file_disk
    done
 fi
 )
 
-# finally create the tarball
-if [ -f "${INFOFILE}" ] ; then
-   DATE="$(date +%Y%m%d_%H%M%S)"
-   NEW_INFOFILE="${WORKING_DIR}/info_${DATE}.tar.bz2"
-   echo
-   echo "Warning: $INFOFILE exists already, using $NEW_INFOFILE instead.">&2
-   INFOFILE="$NEW_INFOFILE" # adjust variable for final info message
+if [ "$GENERATE_DIRECTORY" -gt 0 ] ; then
+  if [ -e "${INFOOUTDIR}" ] ; then
+     # falling back onto nanoseconds as tie-breaker
+     DATE="$(date $TIMESTAMP_NANO)"
+     NEW_INFOOUTDIR="${WORKING_DIR}/grml-hwinfo-$DATE"
+     echo
+     echo "Warning: $INFOOUTDIR exists already, using $NEW_INFOOUTDIR instead.">&2
+     INFOOUTDIR="$NEW_INFOOUTDIR" # adjust variable for final info message
+  fi
+
+  cd "${TMPDIR}"
+  cp -ax "${TMPDIR}/info" "${INFOOUTDIR}"
+
+  echo
+  [ -r "$INFOOUTDIR" ] && echo "$INFOOUTDIR has been generated."
+  echo
 fi
 
-cd "${TMPDIR}"
-tar jcf "${INFOFILE}" "${INFODIR}"
-cd "${WORKING_DIR}"
+if [ "$GENERATE_FILE" -gt 0 ] ; then
+  # finally create the tarball
+  if [ -e "${INFOFILE}" ] ; then
+     # falling back onto nanoseconds as tie-breaker
+     DATE="$(date $TIMESTAMP_NANO)"
+     NEW_INFOFILE="${WORKING_DIR}/grml-hwinfo-$DATE.tar.bz2"
+     echo
+     echo "Warning: $INFOFILE exists already, using $NEW_INFOFILE instead.">&2
+     INFOFILE="$NEW_INFOFILE" # adjust variable for final info message
+  fi
 
-echo
-[ -r "$INFOFILE" ] && echo "$INFOFILE ("$(ls -ahl "$INFOFILE" | awk '{print $5}')") has been generated."
-echo
+  cd "${TMPDIR}"
+  tar jcf "${INFOFILE}" "${INFODIR}"
+  cd "${WORKING_DIR}"
+
+  echo
+  [ -r "$INFOFILE" ] && echo "$INFOFILE ("$(ls -ahl "$INFOFILE" | awk '{print $5}')") has been generated."
+  echo
+fi
 
 bailout
 

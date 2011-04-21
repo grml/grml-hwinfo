@@ -18,8 +18,8 @@ VERSION='0.4.1'
 TIMESTAMP='+%F--%H-%M-%S-%Z'
 TIMESTAMP_NANO='+%F--%H-%M-%S-%N-%Z'
 
-GENERATE_FILE=1
-GENERATE_DIRECTORY=0
+GENERATE_FILE='1'
+GENERATE_DIRECTORY=''
 
 while getopts "hdf" args; do
   case "$args" in
@@ -44,12 +44,12 @@ Options:
   exit 0;;
 
   d)
-  GENERATE_FILE=0
-  GENERATE_DIRECTORY=1
+  GENERATE_FILE=''
+  GENERATE_DIRECTORY='1'
   ;;
 
   f) # generating file; default behaviour
-  GENERATE_FILE=1
+  GENERATE_FILE='1'
   ;;
 
   esac
@@ -125,8 +125,8 @@ cd "${TMPDIR}/${INFODIR}" || bailout 1
 (
   cd "${TMPDIR}/${INFODIR}"
 
-  [ "$GENERATE_FILE" -gt 0 ] &&  echo "Generating hardware information report using file $INFOFILE."
-  [ "$GENERATE_DIRECTORY" -gt 0 ] &&  echo "Generating hardware information report using file $INFOOUTDIR."
+  [ -n "$GENERATE_FILE" ]      && echo "Output file:      $INFOFILE"
+  [ -n "$GENERATE_DIRECTORY" ] && echo "Output directory: $INFOOUTDIR"
   echo "This might take a few seconds/minutes. Please be patient..."
 
 # some sysinfo
@@ -239,7 +239,7 @@ else
 fi
 )
 
-if [ "$GENERATE_DIRECTORY" -gt 0 ] ; then
+if [ -n "$GENERATE_DIRECTORY" ] ; then
   if [ -e "${INFOOUTDIR}" ] ; then
      # falling back onto nanoseconds as tie-breaker
      DATE="$(date $TIMESTAMP_NANO)"
@@ -257,7 +257,7 @@ if [ "$GENERATE_DIRECTORY" -gt 0 ] ; then
   echo
 fi
 
-if [ "$GENERATE_FILE" -gt 0 ] ; then
+if [ -n "$GENERATE_FILE" ] ; then
   # finally create the tarball
   if [ -e "${INFOFILE}" ] ; then
      # falling back onto nanoseconds as tie-breaker

@@ -16,6 +16,10 @@ PN="$(basename $0)"
 [ -n "$WORKING_DIR" -a -d "$WORKING_DIR" ] || WORKING_DIR=$(pwd)
 VERSION='0.4.1'
 
+# data collection should not be affected by user locale
+export LANG=C
+export LC_ALL=C
+
 TIMESTAMP='+%F--%H-%M-%S-%Z'
 DATE="$(date $TIMESTAMP)"
 
@@ -229,7 +233,7 @@ else
       exectest hdparm    && echo "hdparm -iv  /dev/$disk :\n" >> hdparm   && hdparm -iv  /dev/$disk       >> hdparm               && echo "\n\n" >> hdparm
       exectest fdisk     && echo "fdisk -lu   /dev/$disk :\n" >> fdisk    && fdisk -lu   /dev/$disk       >> fdisk 2>>fdisk.error && echo "\n\n" >> fdisk
       exectest parted    && echo "parted -s   /dev/$disk :\n" >> parted   && parted -s   /dev/$disk print >> parted               && echo "\n\n" >> parted
-      LC_ALL=C file -s /dev/$disk?* | grep -v ": empty" >> file_disk
+      file -s /dev/$disk?* | grep -v ": empty" >> file_disk
    done
 fi
 )

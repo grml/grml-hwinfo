@@ -19,13 +19,14 @@ VERSION='0.4.1'
 TIMESTAMP='+%F--%H-%M-%S-%Z'
 DATE="$(date $TIMESTAMP)"
 
+echo "$PN ${VERSION} - collect hardware information"
+
 GENERATE_FILE='1'
 GENERATE_DIRECTORY=''
 
 while getopts "hdf" args; do
   case "$args" in
-  h) echo "$PN - collect hardware information
-
+  h) echo "
 This tool collects information of the hardware this tool is being executed
 on.  It can be executed as normal user to collect some basic information or
 with root permissions to collect as much information as possible.  By
@@ -35,11 +36,10 @@ you can have it create a directory with all information.
 
 Options:
 
--h  :  Display this help
--f  :  Create grml-hwinfo-TIMESTAMP.tar.bz2
--d  :  Create grml-hwinfo-TIMESTAMP/
-
--df :  Create both, the directory and the file
+  -h    Display this help message
+  -f    Create grml-hwinfo-TIMESTAMP.tar.bz2
+  -d    Create grml-hwinfo-TIMESTAMP as a directory
+  -df   Create both, the directory and the file
 "
 
   exit 0;;
@@ -71,8 +71,7 @@ fi
 
 if [ "$(id -u)" != "0" ] ; then
    NOTROOT=1
-   echo "Notice: you are running $PN without root permissions. Not all information will be collected."
-   echo
+   echo "W: Running without root permissions. Not all data will be collected."
 fi
 
 # check whether a binary is available and executable
@@ -117,13 +116,12 @@ disk_info() {
     disklist=`list_disks $device_size`
 }
 
-echo "Running grml-hwinfo ${VERSION} - collecting hardware information."
 
 cd "${OUTDIR}" || exit 1
 (
-
   [ -n "$GENERATE_FILE" ]      && echo "Output file:      $OUTFILE"
   [ -n "$GENERATE_DIRECTORY" ] && echo "Output directory: $OUTDIR"
+  echo
   echo "This might take a few seconds/minutes. Please be patient..."
 
 # some sysinfo

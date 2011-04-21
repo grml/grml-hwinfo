@@ -38,7 +38,7 @@ Options:
 -f  :  Create grml-hwinfo-TIMESTAMP.tar.bz2
 -d  :  Create grml-hwinfo-TIMESTAMP/
 
--fd :  Create both a file and a directory
+-df :  Create both, the directory and the file
 "
 
   exit 0;;

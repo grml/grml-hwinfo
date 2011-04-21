@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH GRML-HWINFO 1 "Juli 28, 2005"
+.TH GRML-HWINFO 1 "April 22, 2011"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -18,7 +18,7 @@
 .SH NAME
 grml-hwinfo \- collect hardware information
 .SH SYNOPSIS
-.B grml-hwinfo
+.B grml-hwinfo [-d] [-f]
 .SH DESCRIPTION
 This manual page documents briefly the
 .B grml-hwinfo
@@ -29,13 +29,18 @@ command.
 .\" respectively.
 \fBgrml-hwinfo\fP is a program that collects information regarding hardware.
 .SH OPTIONS
-This program does not support any options. Either run it as normal user to collect some basic
-information or run it with root permissions to collect as much information as possible. Temporary files
-will be written to a directory namend info in current directory, a file namend info.tar.bz2 will be
-generated. Set environment variable INFOFILE if you want to use different name for infofile, e.g. run
-grml-hwinfo via 'INFOFILE=foobar.tar.bz2 grml-hwinfo' to generate the report in the file foobar.tar.bz2.
+.B -d
+Save collected data in a directory named "grml-hwinfo-TIMESTAMP".
+
+.B -f
+Save collected data in a tarball named "grml-hwinfo-TIMESTAMP.tar.bz2".
+Specify both -d and -f, as -df, to get the directory and the tarball.
+.SH RUNNING AS ROOT
+Running this program as root will make it gather additional information.
+This includes DMI, DDC, disk, partition tables and other data normally
+only available to root.
 .SH AUTHOR
 grml-hwinfo was written by Michael Prokop <mika@grml.org>.
 .PP
 This manual page was written by Michael Prokop <mika@grml.org>,
-for the Debian project (but may be used by others).
+for the Grml project (but may be used by others).

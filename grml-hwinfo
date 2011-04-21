@@ -15,8 +15,9 @@ UNAME="$(uname -r)"
 PN="$(basename $0)"
 [ -n "$WORKING_DIR" -a -d "$WORKING_DIR" ] || WORKING_DIR=$(pwd)
 VERSION='0.4.1'
+
 TIMESTAMP='+%F--%H-%M-%S-%Z'
-TIMESTAMP_NANO='+%F--%H-%M-%S-%N-%Z'
+DATE="$(date $TIMESTAMP)"
 
 GENERATE_FILE='1'
 GENERATE_DIRECTORY=''
@@ -55,20 +56,18 @@ Options:
   esac
   done
 
+# Generate output/temporary directory name & path, and output file path
+OUTFILE=""
+OUTDIRNAME="grml-hwinfo-${DATE}"
+OUTDIR="${WORKING_DIR}/${OUTDIRNAME}"
+mkdir "${OUTDIR}" || { echo 'Directory "'${OUTDIR}'" already exists, aborting.'>&2 ; exit 1; }
 
-TMPDIR=$(mktemp -d) || { echo "Error creating a temporary directory, can not continue. Exiting.">&2 ; exit 1; }
-INFODIR="info"
-
-bailout() {
-  [ -d "$TMPDIR" ] && rm -rf "$TMPDIR"
-  [ -n "$1" ] && exit 1 || exit 0
-}
-
-DATE="$(date $TIMESTAMP)"
-[ -n "$INFOFILE" ] || INFOFILE="grml-hwinfo-$DATE.tar.bz2"
-INFOFILE="${WORKING_DIR}/${INFOFILE}"
-[ -n "$INFOOUTDIR" ] || INFOOUTDIR="grml-hwinfo-$DATE"
-INFOOUTDIR="${WORKING_DIR}/${INFOOUTDIR}"
+if [ -n "$GENERATE_FILE" ] ; then
+   OUTFILE_="${OUTDIR}.tar.bz2"
+   [ -e "${OUTFILE_}" ] && { echo 'File "'${OUTFILE_}'" already exists, aborting.'>&2 ; rm -r "${OUTDIR}"; exit 1; }
+   OUTFILE=${OUTFILE_}
+   touch "${OUTFILE}"
+fi
 
 if [ "$(id -u)" != "0" ] ; then
    NOTROOT=1
@@ -120,13 +119,11 @@ disk_info() {
 
 echo "Running grml-hwinfo ${VERSION} - collecting hardware information."
 
-mkdir "${TMPDIR}/${INFODIR}"
-cd "${TMPDIR}/${INFODIR}" || bailout 1
+cd "${OUTDIR}" || exit 1
 (
-  cd "${TMPDIR}/${INFODIR}"
 
-  [ -n "$GENERATE_FILE" ]      && echo "Output file:      $INFOFILE"
-  [ -n "$GENERATE_DIRECTORY" ] && echo "Output directory: $INFOOUTDIR"
+  [ -n "$GENERATE_FILE" ]      && echo "Output file:      $OUTFILE"
+  [ -n "$GENERATE_DIRECTORY" ] && echo "Output directory: $OUTDIR"
   echo "This might take a few seconds/minutes. Please be patient..."
 
 # some sysinfo
@@ -239,44 +236,24 @@ else
 fi
 )
 
-if [ -n "$GENERATE_DIRECTORY" ] ; then
-  if [ -e "${INFOOUTDIR}" ] ; then
-     # falling back onto nanoseconds as tie-breaker
-     DATE="$(date $TIMESTAMP_NANO)"
-     NEW_INFOOUTDIR="${WORKING_DIR}/grml-hwinfo-$DATE"
-     echo
-     echo "Warning: $INFOOUTDIR exists already, using $NEW_INFOOUTDIR instead.">&2
-     INFOOUTDIR="$NEW_INFOOUTDIR" # adjust variable for final info message
-  fi
+echo
 
-  cd "${TMPDIR}"
-  cp -ax "${TMPDIR}/info" "${INFOOUTDIR}"
+cd "${WORKING_DIR}"
 
-  echo
-  [ -r "$INFOOUTDIR" ] && echo "$INFOOUTDIR has been generated."
-  echo
-fi
-
+# create tarball
 if [ -n "$GENERATE_FILE" ] ; then
-  # finally create the tarball
-  if [ -e "${INFOFILE}" ] ; then
-     # falling back onto nanoseconds as tie-breaker
-     DATE="$(date $TIMESTAMP_NANO)"
-     NEW_INFOFILE="${WORKING_DIR}/grml-hwinfo-$DATE.tar.bz2"
-     echo
-     echo "Warning: $INFOFILE exists already, using $NEW_INFOFILE instead.">&2
-     INFOFILE="$NEW_INFOFILE" # adjust variable for final info message
-  fi
-
-  cd "${TMPDIR}"
-  tar jcf "${INFOFILE}" "${INFODIR}"
-  cd "${WORKING_DIR}"
-
-  echo
-  [ -r "$INFOFILE" ] && echo "$INFOFILE ("$(ls -ahl "$INFOFILE" | awk '{print $5}')") has been generated."
-  echo
+  tar jcf "${OUTFILE}" "${OUTDIRNAME}"
+  [ -r "$OUTFILE" ] && echo "$OUTFILE ("$(ls -ahl "$OUTFILE" | awk '{print $5}')") has been generated."
 fi
 
-bailout
+# remove (temporary) output directory if needed, else keep it, as it doubles
+# as the real output directory.
+if [ -z "$GENERATE_DIRECTORY" ] ; then
+  rm -r "${OUTDIR}"
+else
+  [ -r "${OUTDIR}" ] && echo "${OUTDIR} has been generated."
+fi
+
+exit 0
 
 ## END OF FILE##################################################################

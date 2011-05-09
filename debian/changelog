@@ -1,3 +1,20 @@
+grml-hwinfo (0.4.2) unstable; urgency=low
+
+  [ Richard Hartmann ]
+  * [d833ec9] A multitude of changes
+
+  [ Christian Hofstaedtler ]
+  * [3ad1215] use empty/nonempty for flag variables
+  * [ca2c74f] correct help text for the 'both' option
+  * [ce4fb74] simplify output file/directory logic
+  * [442c6fb] cleanup output and help text
+  * [2d4ac0a] update man page with new options
+  * [9cc721d] run all commands with C locale
+  * [fb84f24] Update Standards-Version to 3.9.2 (no changes)
+  * [189d597] Update Suggests: list
+
+ -- Christian Hofstaedtler <ch@grml.org>  Mon, 09 May 2011 23:51:37 +0200
+
 grml-hwinfo (0.4.1) unstable; urgency=low
 
   [ Ulrich Dangel ]

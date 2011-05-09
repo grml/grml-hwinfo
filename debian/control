@@ -11,7 +11,7 @@ Vcs-Browser: http://git.grml.org/?p=grml-hwinfo.git
 Package: grml-hwinfo
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, sysfsutils
-Suggests: hwinfo, usbutils, pcmcia-utils, net-tools, iproute, powermgmt-base, acpi, xviddetect, xbase-clients, xresprobe, dmidecode, hdparm, parted-bf, smartmontools, procinfo
+Suggests: hwinfo, usbutils, pcmcia-utils, net-tools, iproute, powermgmt-base, acpi, x11-utils, x11-xserver-utils, xresprobe, dmidecode, hdparm, parted, smartmontools, procinfo
 Conflicts: grml-scripts (<= 0.4-15)
 Description: collect hardware information
  This tool collects information of the hardware this tool is

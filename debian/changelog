@@ -1,3 +1,13 @@
+grml-hwinfo (0.4.3) unstable; urgency=low
+
+  [ Christian Hofstaedtler ]
+  * [ddeae74] Add debian/control headers Origin, Bugs
+
+  [ Michael Prokop ]
+  * [e4d559c] drop .hgtags file
+
+ -- Michael Prokop <mika@grml.org>  Sat, 26 Nov 2011 19:50:07 +0100
+
 grml-hwinfo (0.4.2) unstable; urgency=low
 
   [ Richard Hartmann ]

@@ -1,3 +1,12 @@
+grml-hwinfo (0.5.0) unstable; urgency=low
+
+  * [24ef6ad] Support numactl to retrieve NUMA information
+  * [7be0c4c] Adjust version string of script during package build-time
+  * [cdce5f7] debian/rules: provide build-arch+ build-indep
+  * [ad8c9ef] Drop deprecated Conflicts with grml-scripts <= 0.4-15
+
+ -- Michael Prokop <mika@grml.org>  Sat, 28 Jan 2012 00:04:04 +0100
+
 grml-hwinfo (0.4.3) unstable; urgency=low
 
   [ Christian Hofstaedtler ]

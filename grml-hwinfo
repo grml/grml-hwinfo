@@ -164,6 +164,7 @@ cd "${OUTDIR}" || exit 1
 # hwinfo
   exectest discover && discover -v --type-summary --enable-bus all > discover 2> discover.2
   exectest hwinfo   && hwinfo log=hwinfo
+  exectest numactl  && numactl --hardware > numactl
   exectest x86info  && x86info > x86info 2>x86info.2
 
 # net stuff

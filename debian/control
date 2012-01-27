@@ -14,7 +14,6 @@ Package: grml-hwinfo
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, sysfsutils
 Suggests: hwinfo, usbutils, pcmcia-utils, net-tools, iproute, powermgmt-base, acpi, x11-utils, x11-xserver-utils, xresprobe, dmidecode, hdparm, parted, smartmontools, procinfo
-Conflicts: grml-scripts (<= 0.4-15)
 Description: collect hardware information
  This tool collects information of the hardware this tool is
  being executed on.  It can be executed as normal user to collect

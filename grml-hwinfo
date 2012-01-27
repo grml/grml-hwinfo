@@ -14,7 +14,7 @@
 UNAME="$(uname -r)"
 PN="$(basename $0)"
 [ -n "$WORKING_DIR" -a -d "$WORKING_DIR" ] || WORKING_DIR=$(pwd)
-VERSION='0.4.1'
+VERSION='***UNRELEASED***'
 
 # data collection should not be affected by user locale
 export LANG=C

@@ -9,10 +9,15 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+VERSION:=$(shell dpkg-parsechangelog | awk '/Version: / { print $$2 }')
+
+
 build: build-stamp
 
 build-stamp:
 	dh_testdir
+	egrep -q "^VERSION=.*UNRELEASED" grml-hwinfo || \
+	  (echo "Wrong version in grml-hwinfo" && exit 2)
 
 	touch build-stamp
 
@@ -21,12 +26,12 @@ clean:
 	dh_testroot
 	rm -f build-stamp
 
-	dh_clean 
+	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k 
+	dh_clean -k
 	dh_installdirs
 
 	# Add here commands to install the package into debian/grml-hwinfo.
@@ -41,9 +46,10 @@ binary-arch: build install
 binary-indep: build install
 	dh_testdir
 	dh_testroot
-	dh_installchangelogs 
+	dh_installchangelogs
 	dh_installdocs
 	dh_installman grml-hwinfo.1 sysdump.8
+	sed -i -e "s/^VERSION='\*\*\*UNRELEASED\*\*\*'/VERSION='$(VERSION)'/" $(CURDIR)/debian/grml-hwinfo/usr/bin/grml-hwinfo
 	dh_link
 	dh_strip
 	dh_compress

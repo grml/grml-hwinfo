@@ -11,21 +11,22 @@
 
 VERSION:=$(shell dpkg-parsechangelog | awk '/Version: / { print $$2 }')
 
+build: build-arch build-indep
 
-build: build-stamp
+build-arch: build-stamp
+
+build-indep: build-stamp
 
 build-stamp:
 	dh_testdir
 	egrep -q "^VERSION=.*UNRELEASED" grml-hwinfo || \
 	  (echo "Wrong version in grml-hwinfo" && exit 2)
-
 	touch build-stamp
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
-
 	dh_clean
 
 install: build

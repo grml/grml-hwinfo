@@ -198,8 +198,8 @@ cd "${OUTDIR}" || exit 1
      [ -r /boot/config-$UNAME ] && cat /boot/config-$UNAME > kernelconfig
   fi
 
-  exectest dpkg && COLUMNS=1000 dpkg -l linux-image-$UNAME \
-           | grep linux-image-$UNAME | tr -s ' ' > running_kernel 2>running_kernel.error
+  exectest dpkg && COLUMNS=1000 dpkg -l linux-image-$UNAME 2>running_kernel.error \
+           | grep linux-image-$UNAME | tr -s ' ' > running_kernel 2>>running_kernel.error
   dpkg -S /boot/vmlinuz-$(uname -r) >> running_kernel 2>>running_kernel.error
 
 # X stuff

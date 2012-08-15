@@ -226,7 +226,6 @@ else
    echo "running as root" > root
    disk_info
    exectest sfdisk     && sfdisk -d > sfdisk 2>sfdisk.error
-   exectest ddcprobe   && ddcprobe  > ddcprobe
    exectest dmidecode  && dmidecode > dmidecode
 
    exectest dconf && dconf -o dconf

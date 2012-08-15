@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Filename:      grml-hwinfo
 # Purpose:       get hardware information
 # Authors:       grml-team (grml.org), (c) Michael Prokop <mika@grml.org>
@@ -149,6 +149,7 @@ cd "${OUTDIR}" || exit 1
   for i in free lsmod mount lsdev ; do
       exectest $i  && $i > $i
   done
+  swapon -s > swapon 2>swapon.error
 
 # proc stuff
   for i in cpuinfo interrupts cmdline devices dma fb iomem ioports \
@@ -228,6 +229,16 @@ else
    if [ -x /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl ] ; then
       /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl > decode-dimms 2>decode-dimms.error
    fi
+
+   exectest mdadm && mdadm --detail /dev/md[0-9]* >> mdadm 2>mdadm.error
+
+   # LVM
+   exectest pvs && pvs > pvs 2>pvs.error
+   exectest vgs && vgs > vgs 2>vgs.error
+   exectest lvs && lvs > lvs 2>lvs.error
+   exectest lvdisplay && lvdisplay > lvdisplay 2>lvdisplay.error
+
+   exectest dmsetup && dmsetup ls > dmsetup_ls 2>dmsetup_ls.error
 
    for disk in $disklist; do
       exectest smartctl  && echo "smartctl -a /dev/$disk :\n" >> smartctl && smartctl -a /dev/$disk       >> smartctl             && echo "\n\n" >> smartctl

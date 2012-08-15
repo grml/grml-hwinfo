@@ -257,6 +257,11 @@ else
 fi
 )
 
+# get rid of empty files
+for file in *; do
+  test -s $file || rm $file
+done
+
 echo
 
 cd "${WORKING_DIR}"

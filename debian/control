@@ -15,7 +15,7 @@ Architecture: all
 Depends: sysfsutils,
          ${misc:Depends},
          ${shlibs:Depends}
-Suggests: acpi,
+Recommends: acpi,
           dmidecode,
           dmsetup,
           hdparm,

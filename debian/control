@@ -15,26 +15,30 @@ Architecture: all
 Depends: sysfsutils,
          ${misc:Depends}
 Recommends: acpi,
-          dmidecode,
-          dmsetup,
-          hdparm,
-          hwinfo,
-          iproute,
-          lvm2,
-          mdadm,
-          net-tools,
-          parted,
-          powermgmt-base,
-          procinfo,
-          smartmontools,
-          usbutils,
-          x11-utils,
-          x11-xserver-utils,
-          xresprobe
+            dconf,
+            dmidecode,
+            dmsetup,
+            hdparm,
+            hwinfo,
+            iproute,
+            laptop-detect,
+            lvm2,
+            mdadm,
+            net-tools,
+            numactl,
+            parted,
+            powermgmt-base,
+            procinfo,
+            smartmontools,
+            usbutils,
+            x11-utils,
+            x11-xserver-utils,
+            x86info,
+            xresprobe
 Description: collect hardware information
  This tool collects information of the hardware this tool is
- being executed on.  It can be executed as normal user to collect
+ being executed on. It can be executed as normal user to collect
  some basic information or with root permissions to collect as
- much information as possible. A file named info.tar.bz2 storing
- all collected information will be created in the current working
- directory.
+ much information as possible. A file named
+ grml-hwinfo-$TIMESTAMP.tar.bz2 storing all collected information
+ will be created in the current working directory.

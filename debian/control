@@ -13,8 +13,7 @@ Bugs: mailto:bugs@grml.org
 Package: grml-hwinfo
 Architecture: all
 Depends: sysfsutils,
-         ${misc:Depends},
-         ${shlibs:Depends}
+         ${misc:Depends}
 Recommends: acpi,
           dmidecode,
           dmsetup,

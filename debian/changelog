@@ -1,3 +1,20 @@
+grml-hwinfo (0.6.0) unstable; urgency=low
+
+  * [f5c36fb] Add support for swapon, mdadm, LVM + dmsetup
+  * [f66e7d5] Bump Standards-Version to 3.9.3
+  * [8fa5a70] Apply wrap-and-sort on Debian package
+  * [4a8b026] Drop deprecated pcmcia-utils from Suggests
+  * [a5a8a78] Use Recommends for all packages instead of Suggests
+  * [f5170f3] Drop ${shlibs:Depends} from Depends
+  * [04fe9e7] List missing tools in file missing_tools
+  * [66a9dfd] Drop support for ddcprobe which is deprecated since ages
+  * [1361f33] Update Recommends and package description to reflect current
+    state of script
+  * [d61f73b] Improve check for running_kernel
+  * [3408832] Get rid of generated files which are empty
+
+ -- Michael Prokop <mika@grml.org>  Thu, 16 Aug 2012 01:32:38 +0200
+
 grml-hwinfo (0.5.0) unstable; urgency=low
 
   * [24ef6ad] Support numactl to retrieve NUMA information

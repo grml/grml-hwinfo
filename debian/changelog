@@ -1,3 +1,21 @@
+grml-hwinfo (0.7.0) unstable; urgency=low
+
+  * [508ee7c] Redirect dpkg error message for running_kernel
+  * [47ade83] Rework cmdline option handling, replacing "-df" with "-b"
+    and adding new options
+  * [8c62e67] Support proxmox/libvirt/openvz/vserver information retrieval
+  * [91379ed] Fix formating of disk tools output
+  * [a04bc22] Unify indention
+  * [7e0b636] Run lspci -nn for lspci output, do not check for /proc/bus/*
+    for lspnp && lsusb commands but instead just run exectest
+  * [772dcc6] Remove only empty *.error files to see which commands have
+    been executed
+  * [0cb80d4] Improve usage text
+  * [226e977] Run tar with --auto-compress for better --output-file
+    support
+
+ -- Michael Prokop <mika@grml.org>  Thu, 16 Aug 2012 10:40:50 +0200
+
 grml-hwinfo (0.6.0) unstable; urgency=low
 
   * [f5c36fb] Add support for swapon, mdadm, LVM + dmsetup

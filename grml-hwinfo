@@ -183,14 +183,12 @@ cd "${OUTDIR}" || exit 1
 
   # disks / devices
   [ -f /proc/scsi/scsi ] && cat /proc/scsi/scsi > scsi
-  (lspci; lspci -n) | sort > lspci
-  [ -r /proc/bus/pnp ] && lspnp > lspnp
-  [ -r /proc/bus/usb ] && lsusb > lsusb
+  exectest lspci && lspci -nn > lspci
   cat /proc/partitions > partitions
   find /proc/ide/ -name geometry -exec grep . {} \; > proc_ide 2>/dev/null
   df -h > df 2>/dev/null
-  for i in free lsmod mount lsdev ; do
-    exectest $i  && $i > $i
+  for i in free lsmod mount lsdev lspnp lsusb ; do
+    exectest $i && $i > $i
   done
   swapon -s > swapon 2>swapon.error
 

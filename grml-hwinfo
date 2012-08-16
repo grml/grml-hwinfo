@@ -295,11 +295,37 @@ else
    exectest dmsetup && dmsetup ls > dmsetup_ls 2>dmsetup_ls.error
 
    for disk in $disklist; do
-      exectest smartctl  && echo "smartctl -a /dev/$disk :\n" >> smartctl && smartctl -a /dev/$disk       >> smartctl             && echo "\n\n" >> smartctl
-      exectest hdparm    && echo "hdparm -iv  /dev/$disk :\n" >> hdparm   && hdparm -iv  /dev/$disk       >> hdparm               && echo "\n\n" >> hdparm
-      exectest fdisk     && echo "fdisk -lu   /dev/$disk :\n" >> fdisk    && fdisk -lu   /dev/$disk       >> fdisk 2>>fdisk.error && echo "\n\n" >> fdisk
-      exectest parted    && echo "parted -s   /dev/$disk :\n" >> parted   && parted -s   /dev/$disk print >> parted               && echo "\n\n" >> parted
-      file -s /dev/$disk?* | grep -v ": empty" >> file_disk
+     if exectest smartctl ; then
+       echo -e "smartctl -a /dev/${disk}:\n" >> smartctl
+       smartctl -a /dev/$disk >> smartctl
+       echo -e "\n\n" >> smartctl
+     fi
+
+     if exectest hdparm ; then
+       echo -e "hdparm -iv /dev/${disk}:\n" >> hdparm
+       hdparm -iv /dev/$disk >> hdparm
+       echo -e "\n\n" >> hdparm
+     fi
+
+     if exectest fdisk ; then
+       echo -e "fdisk -lu /dev/${disk}:\n" >> fdisk
+       fdisk -lu /dev/$disk >>fdisk 2>>fdisk.error
+       echo -e "\n\n" >> fdisk
+     fi
+
+     if exectest parted ; then
+       echo -e "parted -s /dev/${disk}:\n" >> parted
+       parted -s /dev/$disk print >> parted
+       echo -e "\n\n" >> parted
+     fi
+
+     if exectest sdparm ; then
+       echo -e "sdparm --all --long /dev/${disk}:\n" >> sdparm
+       sdparm --all --long /dev/$disk >> sdparm
+       echo -e "\n\n" >> sdparm
+     fi
+
+     file -s /dev/$disk?* | grep -v ": empty" >> file_disk
    done
 fi
 )

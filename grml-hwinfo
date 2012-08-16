@@ -25,12 +25,14 @@ DATE="$(date $TIMESTAMP)"
 
 echo "$PN ${VERSION} - collect hardware information"
 
+# defaults
 GENERATE_FILE='1'
 GENERATE_DIRECTORY=''
+_opt_output_directory=false
+_opt_output_file=false
 
-while getopts "hdf" args; do
-  case "$args" in
-  h) echo "
+usage() {
+  echo "
 This tool collects information of the hardware this tool is being executed
 on.  It can be executed as normal user to collect some basic information or
 with root permissions to collect as much information as possible.  By
@@ -40,34 +42,70 @@ you can have it create a directory with all information.
 
 Options:
 
-  -h    Display this help message
-  -f    Create grml-hwinfo-TIMESTAMP.tar.bz2
-  -d    Create grml-hwinfo-TIMESTAMP as a directory
-  -df   Create both, the directory and the file
+  -b, --both                 Create directory + file grml-hwinfo-TIMESTAMP.tar.bz2
+  -d, --directory            Create grml-hwinfo-TIMESTAMP as a directory (no file)
+  -f, --file                 Create grml-hwinfo-TIMESTAMP.tar.bz2 [default action]
+  -h, --help                 Display this help message
+  --output-directory <dir>   Store output files in specified directory
+  --output-file <file>       Store output in specified filename (tar.bz2 format)
 "
+}
 
-  exit 0;;
+CMDLINE_OPTS=output-directory:,output-file:,both,directory,file,help
+_opt_temp=$(getopt --name grml-hwinfo -o +bdfh --long $CMDLINE_OPTS -- "$@")
+if [ $? -ne 0 ]; then
+  echo "Try 'grml-hwinfo --help' for more information." >&2
+  exit 1
+fi
+eval set -- "$_opt_temp"
 
-  d)
-  GENERATE_FILE=''
-  GENERATE_DIRECTORY='1'
-  ;;
-
-  f) # generating file; default behaviour
-  GENERATE_FILE='1'
-  ;;
-
+while :; do
+  case "$1" in
+  --help|-h)
+    usage ; exit 0
+    ;;
+  --output-directory)
+    shift; OUTDIRNAME="$1"
+    GENERATE_DIRECTORY='1'
+    _opt_output_directory=true
+    $_opt_output_file && GENERATE_FILE='1' || GENERATE_FILE=''
+    ;;
+  --output-file)
+    shift; OUTFILE="$1"
+    GENERATE_FILE='1'
+    _opt_output_file=true
+    $_opt_output_directory && GENERATE_DIRECTORY='1' || GENERATE_DIRECTORY=''
+    ;;
+  -d|--directory)
+    GENERATE_DIRECTORY='1'
+    GENERATE_FILE=''
+    ;;
+  -f|--file)
+    GENERATE_DIRECTORY=''
+    GENERATE_FILE='1'
+    ;;
+  -b|--both)
+    GENERATE_DIRECTORY='1'
+    GENERATE_FILE='1'
+    ;;
+  --)
+    shift; break
+    ;;
+  *)
+    echo "Internal getopt error!" >&2
+    exit 1
+    ;;
   esac
-  done
+  shift
+done
 
 # Generate output/temporary directory name & path, and output file path
-OUTFILE=""
-OUTDIRNAME="grml-hwinfo-${DATE}"
+[ -n "$OUTDIRNAME" ] || OUTDIRNAME="grml-hwinfo-${DATE}"
 OUTDIR="${WORKING_DIR}/${OUTDIRNAME}"
 mkdir "${OUTDIR}" || { echo 'Directory "'${OUTDIR}'" already exists, aborting.'>&2 ; exit 1; }
 
 if [ -n "$GENERATE_FILE" ] ; then
-   OUTFILE_="${OUTDIR}.tar.bz2"
+   [ -n "$OUTFILE" ] && OUTFILE_="$OUTFILE" || OUTFILE_="${OUTDIR}.tar.bz2"
    [ -e "${OUTFILE_}" ] && { echo 'File "'${OUTFILE_}'" already exists, aborting.'>&2 ; rm -r "${OUTDIR}"; exit 1; }
    OUTFILE=${OUTFILE_}
    touch "${OUTFILE}"

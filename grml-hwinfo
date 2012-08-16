@@ -334,7 +334,7 @@ cd "${WORKING_DIR}"
 
 # create tarball
 if [ -n "$GENERATE_FILE" ] ; then
-  tar jcf "${OUTFILE}" "${OUTDIRNAME}"
+  tar acf "${OUTFILE}" "${OUTDIRNAME}"
   [ -r "$OUTFILE" ] && echo "$OUTFILE ("$(ls -ahl "$OUTFILE" | awk '{print $5}')") has been generated."
 fi
 

@@ -33,14 +33,14 @@ _opt_output_file=false
 
 usage() {
   echo "
-This tool collects information of the hardware this tool is being executed
-on.  It can be executed as normal user to collect some basic information or
-with root permissions to collect as much information as possible.  By
-default, a file named grml-hwinfo-TIMESTAMP.tar.bz2 storing all collected
-information will be created in the current working directory. Alternatively,
-you can have it create a directory with all information.
+  This tool collects information of the hardware this tool is being executed
+  on.  It can be executed as normal user to collect some basic information or
+  with root permissions to collect as much information as possible.  By
+  default, a file named grml-hwinfo-TIMESTAMP.tar.bz2 storing all collected
+  information will be created in the current working directory. Alternatively,
+  you can have it create a directory with all information.
 
-Options:
+  Options:
 
   -b, --both                 Create directory + file grml-hwinfo-TIMESTAMP.tar.bz2
   -d, --directory            Create grml-hwinfo-TIMESTAMP as a directory (no file)
@@ -48,7 +48,7 @@ Options:
   -h, --help                 Display this help message
   --output-directory <dir>   Store output files in specified directory
   --output-file <file>       Store output in specified filename (tar.bz2 format)
-"
+  "
 }
 
 CMDLINE_OPTS=output-directory:,output-file:,both,directory,file,help
@@ -105,62 +105,62 @@ OUTDIR="${WORKING_DIR}/${OUTDIRNAME}"
 mkdir "${OUTDIR}" || { echo 'Directory "'${OUTDIR}'" already exists, aborting.'>&2 ; exit 1; }
 
 if [ -n "$GENERATE_FILE" ] ; then
-   [ -n "$OUTFILE" ] && OUTFILE_="$OUTFILE" || OUTFILE_="${OUTDIR}.tar.bz2"
-   [ -e "${OUTFILE_}" ] && { echo 'File "'${OUTFILE_}'" already exists, aborting.'>&2 ; rm -r "${OUTDIR}"; exit 1; }
-   OUTFILE=${OUTFILE_}
-   touch "${OUTFILE}"
+  [ -n "$OUTFILE" ] && OUTFILE_="$OUTFILE" || OUTFILE_="${OUTDIR}.tar.bz2"
+  [ -e "${OUTFILE_}" ] && { echo 'File "'${OUTFILE_}'" already exists, aborting.'>&2 ; rm -r "${OUTDIR}"; exit 1; }
+  OUTFILE=${OUTFILE_}
+  touch "${OUTFILE}"
 fi
 
 if [ "$(id -u)" != "0" ] ; then
-   NOTROOT=1
-   echo "W: Running without root permissions. Not all data will be collected."
+  NOTROOT=1
+  echo "W: Running without root permissions. Not all data will be collected."
 fi
 
 # check whether a binary is available and executable
 exectest() {
-if [ -z "$1" ] ; then
-   echo 'Usage: exectest <binary>'>&2
-   return 1
-else
-   if test -e "$(which $1)" ; then
-     return 0
-   else
-     grep -q "^$1"'$' missing_tools 2>/dev/null || echo "$1" >> missing_tools
-     return 1
-   fi
-fi
+  if [ -z "$1" ] ; then
+    echo 'Usage: exectest <binary>'>&2
+    return 1
+  else
+    if test -e "$(which $1)" ; then
+      return 0
+    else
+      grep -q "^$1"'$' missing_tools 2>/dev/null || echo "$1" >> missing_tools
+      return 1
+    fi
+  fi
 }
 
 # echo a list of all disks and their size
 # taken from http://cvs.debian.org/fai/lib/disk-info
 diskandsize() {
-    local isdisk major minor blocks device suffix
-    while read major minor blocks device suffix; do
-        isdisk=1
-        # skip ide cdrom
-        [ -f /proc/ide/$device/media ] && grep -q cdrom /proc/ide/$device/media && isdisk=0
-        [ "$isdisk" -eq 1 ] && echo "$device $blocks"
-    done
+  local isdisk major minor blocks device suffix
+  while read major minor blocks device suffix; do
+    isdisk=1
+    # skip ide cdrom
+    [ -f /proc/ide/$device/media ] && grep -q cdrom /proc/ide/$device/media && isdisk=0
+    [ "$isdisk" -eq 1 ] && echo "$device $blocks"
+  done
 }
 
 list_disks() {
-# print only every second entry; used by disk_info
-i=0
-for ent in $@; do
+  # print only every second entry; used by disk_info
+  i=0
+  for ent in $@; do
     if [ "$i" -eq 0 ]; then
-        echo $ent
-        i=1
+      echo $ent
+      i=1
     else
-        i=0
+      i=0
     fi
-done
+  done
 }
 
 disk_info() {
-    # the variable holds a space separated list of devices and their block size
-    device_size=`grep -E ' cciss/c.d.$| ida/c.d.$| rd/c.d.$| hd.$| sd.$|/disc$' /proc/partitions | diskandsize`
-    # a list of all local disks, without size
-    disklist=`list_disks $device_size`
+  # the variable holds a space separated list of devices and their block size
+  device_size=`grep -E ' cciss/c.d.$| ida/c.d.$| rd/c.d.$| hd.$| sd.$|/disc$' /proc/partitions | diskandsize`
+  # a list of all local disks, without size
+  disklist=`list_disks $device_size`
 }
 
 
@@ -171,7 +171,7 @@ cd "${OUTDIR}" || exit 1
   echo
   echo "This might take a few seconds/minutes. Please be patient..."
 
-# some sysinfo
+  # some sysinfo
   date > date
   if [ -r /etc/grml_version ] ; then
      cat /etc/grml_version > grml_version
@@ -181,7 +181,7 @@ cd "${OUTDIR}" || exit 1
   fi
   uname -a > uname
 
-# disks / devices
+  # disks / devices
   [ -f /proc/scsi/scsi ] && cat /proc/scsi/scsi > scsi
   (lspci; lspci -n) | sort > lspci
   [ -r /proc/bus/pnp ] && lspnp > lspnp
@@ -190,144 +190,140 @@ cd "${OUTDIR}" || exit 1
   find /proc/ide/ -name geometry -exec grep . {} \; > proc_ide 2>/dev/null
   df -h > df 2>/dev/null
   for i in free lsmod mount lsdev ; do
-      exectest $i  && $i > $i
+    exectest $i  && $i > $i
   done
   swapon -s > swapon 2>swapon.error
 
-# proc stuff
+  # proc stuff
   for i in cpuinfo interrupts cmdline devices dma fb iomem ioports \
     mdstat meminfo modules mtrr pci version ; do
     [ -r /proc/$i ] && cat /proc/$i > proc_$i
   done
   exectest sysdump  && sysdump > sysdump 2>sysdump.error
-# for sysnet in `find /proc/sys/net/*/ -type f | grep -v flush`; do cat $sysnet >> sysnet ; done
 
-# log
+  # log
   dmesg > dmesg.cur
 
-# hwinfo
+  # hwinfo
   exectest discover && discover -v --type-summary --enable-bus all > discover 2> discover.2
   exectest hwinfo   && hwinfo log=hwinfo
   exectest numactl  && numactl --hardware > numactl
   exectest x86info  && x86info > x86info 2>x86info.2
 
-# net stuff
+  # net stuff
   exectest ifconfig  && ifconfig -v -a  > ifconfig
   exectest ip        && ip route show   > ip_route
   exectest ip        && ip link show    > ip_link
   exectest route     && route -n        > route
 
-# software
+  # software
   if exectest dpkg ; then
-     dpkg --get-selections   > dpkg_get_selections
-     COLUMNS=300 dpkg --list > dpkg_list
+    dpkg --get-selections   > dpkg_get_selections
+    COLUMNS=300 dpkg --list > dpkg_list
   fi
 
-# power management
+  # power management
   exectest laptop-detect  && laptop-detect >/dev/null 2>/dev/null && echo "0" > laptop_detected
   exectest acpi_available && acpi_available && cat /proc/acpi/info > acpi_info
   exectest acpi && acpi > acpi 2> acpi.error && acpi -v > acpi.version
   [ -r /proc/apm/ ] && apm > apm
 
-# kernel stuff
+  # kernel stuff
   if [ -r /proc/config.gz ] ; then
-     zcat /proc/config.gz > kernelconfig
+    zcat /proc/config.gz > kernelconfig
   else
-     [ -r /boot/config-$UNAME ] && cat /boot/config-$UNAME > kernelconfig
+    [ -r /boot/config-$UNAME ] && cat /boot/config-$UNAME > kernelconfig
   fi
 
   exectest dpkg && COLUMNS=1000 dpkg -l linux-image-$UNAME 2>running_kernel.error \
            | grep linux-image-$UNAME | tr -s ' ' > running_kernel 2>>running_kernel.error
   dpkg -S /boot/vmlinuz-$(uname -r) >> running_kernel 2>>running_kernel.error
 
-# X stuff
+  # X stuff
   if [ -n "${DISPLAY}" ] ; then
-     exectest xviddetect  && xviddetect         > xviddetect
-     exectest xvidtune    && xvidtune -show     > xdivtune
-     exectest xrandr      && xrandr             > xrandr
-     exectest xdpyinfo    && xdpyinfo           > xdpyinfo
-     X -version > x_version 2>&1
+    exectest xviddetect  && xviddetect         > xviddetect
+    exectest xvidtune    && xvidtune -show     > xdivtune
+    exectest xrandr      && xrandr             > xrandr
+    exectest xdpyinfo    && xdpyinfo           > xdpyinfo
+    X -version > x_version 2>&1
   fi
 
   for i in Xorg.0.log Xorg.7.log Xorg.8.log XFree86.0.log XFree86.7.log XFree86.8.log dmesg ; do
-      cp /var/log/$i log_$i 2>/dev/null
+    cp /var/log/$i log_$i 2>/dev/null
   done
 
   cp /etc/X11/xorg.conf    xorg.conf    2>/dev/null
   cp /etc/modules          modules      2>/dev/null
   cp /etc/X11/XF86Config-4 XF86Config-4 2>/dev/null
 
-# not available:
-# sysinfo -class device -level all
+  # as root:
+  if [ -n "$NOTROOT" ] ; then
+    echo "not running as root" > root
+  else
+    echo "running as root" > root
+    disk_info
+    exectest sfdisk     && sfdisk -d > sfdisk 2>sfdisk.error
+    exectest dmidecode  && dmidecode > dmidecode
 
-# as root:
-if [ -n "$NOTROOT" ] ; then
-   echo "not running as root" > root
-else
-   echo "running as root" > root
-   disk_info
-   exectest sfdisk     && sfdisk -d > sfdisk 2>sfdisk.error
-   exectest dmidecode  && dmidecode > dmidecode
+    exectest dconf && dconf -o dconf
 
-   exectest dconf && dconf -o dconf
-
-   if [ -x /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl ] ; then
+    if [ -x /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl ] ; then
       /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl > decode-dimms 2>decode-dimms.error
-   fi
+    fi
 
-   # proxmox
-   exectest qm && qm list > qm 2>qm.error
-   # libvirt
-   exectest virsh && virsh list >virsh 2>virsh.error
-   # openvz
-   exectest vzlist && vzlist >vzlist 2>vzlist.error
-   # vserver
-   exectest vserver-stat && vserver-stat >vserver-stat 2>vserver-stat.error
+    # proxmox
+    exectest qm && qm list > qm 2>qm.error
+    # libvirt
+    exectest virsh && virsh list >virsh 2>virsh.error
+    # openvz
+    exectest vzlist && vzlist >vzlist 2>vzlist.error
+    # vserver
+    exectest vserver-stat && vserver-stat >vserver-stat 2>vserver-stat.error
 
-   exectest mdadm && mdadm --detail /dev/md[0-9]* >> mdadm 2>mdadm.error
+    exectest mdadm && mdadm --detail /dev/md[0-9]* >> mdadm 2>mdadm.error
 
-   # LVM
-   exectest pvs && pvs > pvs 2>pvs.error
-   exectest vgs && vgs > vgs 2>vgs.error
-   exectest lvs && lvs > lvs 2>lvs.error
-   exectest lvdisplay && lvdisplay > lvdisplay 2>lvdisplay.error
+    # LVM
+    exectest pvs && pvs > pvs 2>pvs.error
+    exectest vgs && vgs > vgs 2>vgs.error
+    exectest lvs && lvs > lvs 2>lvs.error
+    exectest lvdisplay && lvdisplay > lvdisplay 2>lvdisplay.error
 
-   exectest dmsetup && dmsetup ls > dmsetup_ls 2>dmsetup_ls.error
+    exectest dmsetup && dmsetup ls > dmsetup_ls 2>dmsetup_ls.error
 
-   for disk in $disklist; do
-     if exectest smartctl ; then
-       echo -e "smartctl -a /dev/${disk}:\n" >> smartctl
-       smartctl -a /dev/$disk >> smartctl
-       echo -e "\n\n" >> smartctl
-     fi
+    for disk in $disklist; do
+      if exectest smartctl ; then
+        echo -e "smartctl -a /dev/${disk}:\n" >> smartctl
+        smartctl -a /dev/$disk >> smartctl
+        echo -e "\n\n" >> smartctl
+      fi
 
-     if exectest hdparm ; then
-       echo -e "hdparm -iv /dev/${disk}:\n" >> hdparm
-       hdparm -iv /dev/$disk >> hdparm
-       echo -e "\n\n" >> hdparm
-     fi
+      if exectest hdparm ; then
+        echo -e "hdparm -iv /dev/${disk}:\n" >> hdparm
+        hdparm -iv /dev/$disk >> hdparm
+        echo -e "\n\n" >> hdparm
+      fi
 
-     if exectest fdisk ; then
-       echo -e "fdisk -lu /dev/${disk}:\n" >> fdisk
-       fdisk -lu /dev/$disk >>fdisk 2>>fdisk.error
-       echo -e "\n\n" >> fdisk
-     fi
+      if exectest fdisk ; then
+        echo -e "fdisk -lu /dev/${disk}:\n" >> fdisk
+        fdisk -lu /dev/$disk >>fdisk 2>>fdisk.error
+        echo -e "\n\n" >> fdisk
+      fi
 
-     if exectest parted ; then
-       echo -e "parted -s /dev/${disk}:\n" >> parted
-       parted -s /dev/$disk print >> parted
-       echo -e "\n\n" >> parted
-     fi
+      if exectest parted ; then
+        echo -e "parted -s /dev/${disk}:\n" >> parted
+        parted -s /dev/$disk print >> parted
+        echo -e "\n\n" >> parted
+      fi
 
-     if exectest sdparm ; then
-       echo -e "sdparm --all --long /dev/${disk}:\n" >> sdparm
-       sdparm --all --long /dev/$disk >> sdparm
-       echo -e "\n\n" >> sdparm
-     fi
+      if exectest sdparm ; then
+        echo -e "sdparm --all --long /dev/${disk}:\n" >> sdparm
+        sdparm --all --long /dev/$disk >> sdparm
+        echo -e "\n\n" >> sdparm
+      fi
 
-     file -s /dev/$disk?* | grep -v ": empty" >> file_disk
-   done
-fi
+      file -s /dev/$disk?* | grep -v ": empty" >> file_disk
+    done
+  fi
 )
 
 # get rid of empty files

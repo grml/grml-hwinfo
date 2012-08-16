@@ -33,12 +33,11 @@ _opt_output_file=false
 
 usage() {
   echo "
-  This tool collects information of the hardware this tool is being executed
-  on.  It can be executed as normal user to collect some basic information or
-  with root permissions to collect as much information as possible.  By
-  default, a file named grml-hwinfo-TIMESTAMP.tar.bz2 storing all collected
-  information will be created in the current working directory. Alternatively,
-  you can have it create a directory with all information.
+  This tool collects information of the hardware it is being executed on.
+  It can be executed as normal user to collect some basic information or
+  (recommended) with root permissions to collect more system information.
+  If executed without any options a file named grml-hwinfo-TIMESTAMP.tar.bz2
+  storing all collected information is created in the current working directory.
 
   Options:
 

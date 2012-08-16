@@ -275,6 +275,15 @@ else
       /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl > decode-dimms 2>decode-dimms.error
    fi
 
+   # proxmox
+   exectest qm && qm list > qm 2>qm.error
+   # libvirt
+   exectest virsh && virsh list >virsh 2>virsh.error
+   # openvz
+   exectest vzlist && vzlist >vzlist 2>vzlist.error
+   # vserver
+   exectest vserver-stat && vserver-stat >vserver-stat 2>vserver-stat.error
+
    exectest mdadm && mdadm --detail /dev/md[0-9]* >> mdadm 2>mdadm.error
 
    # LVM

@@ -325,7 +325,7 @@ cd "${OUTDIR}" || exit 1
 )
 
 # get rid of empty files
-for file in *; do
+for file in *.error ; do
   test -s $file || rm $file
 done
 

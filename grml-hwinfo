@@ -287,6 +287,16 @@ cd "${OUTDIR}" || exit 1
 
     exectest dmsetup && dmsetup ls > dmsetup_ls 2>dmsetup_ls.error
 
+    # iSCSI
+    if exectest iscsiadm ; then
+      iscsiadm -m session > iscsiadm_session 2>iscsiadm_session.error
+      iscsiadm -m fw > iscsiadm_fw 2>iscsiadm_fw.error
+      iscsiadm -m host > iscsiadm_host 2>iscsiadm_host.error
+      iscsiadm -m iface > iscsiadm_iface 2>iscsiadm_iface.error
+      iscsiadm -m node > iscsiadm_node 2>iscsiadm_node.error
+      iscsiadm -m discovery > iscsiadm_discovery 2>iscsiadm_discovery.error
+    fi
+
     for disk in $disklist; do
       if exectest smartctl ; then
         echo -e "smartctl -a /dev/${disk}:\n" >> smartctl

@@ -297,6 +297,8 @@ cd "${OUTDIR}" || exit 1
       iscsiadm -m discovery > iscsiadm_discovery 2>iscsiadm_discovery.error
     fi
 
+    exectest lsscsi && lsscsi > lsscsi 2>lsscsi.error
+
     for disk in $disklist; do
       if exectest smartctl ; then
         echo -e "smartctl -a /dev/${disk}:\n" >> smartctl

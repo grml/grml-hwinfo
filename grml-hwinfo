@@ -297,7 +297,10 @@ cd "${OUTDIR}" || exit 1
       iscsiadm -m discovery > iscsiadm_discovery 2>iscsiadm_discovery.error
     fi
 
-    exectest lsscsi && lsscsi > lsscsi 2>lsscsi.error
+    if exectest lsscsi ; then
+      lsscsi    > lsscsi 2>lsscsi.error
+      lsscsi -t > lsscsi_transport 2>lsscsi_transport.error
+    fi
 
     for disk in $disklist; do
       if exectest smartctl ; then

@@ -1,3 +1,14 @@
+grml-hwinfo (0.8.0) unstable; urgency=low
+
+  * [058f4d8] Add support retrieving iSCSI information using iscsiadm from
+    open-iscsi
+  * [211ace9] Retrieve information about SCSI devices using lsscsi. Thanks
+    to Christian Hofstaedtler for the hint
+  * [ab9a47b] lsscsi: collect transport information in lsscsi_transport
+  * [6fa93ae] Bump Standards-Version to 3.9.4
+
+ -- Michael Prokop <mika@grml.org>  Tue, 02 Oct 2012 09:57:53 +0200
+
 grml-hwinfo (0.7.0) unstable; urgency=low
 
   * [508ee7c] Redirect dpkg error message for running_kernel

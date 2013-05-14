@@ -206,6 +206,7 @@ cd "${OUTDIR}" || exit 1
   exectest hwinfo   && hwinfo log=hwinfo
   exectest numactl  && numactl --hardware > numactl
   exectest x86info  && x86info > x86info 2>x86info.2
+  exectest lscpu    && lscpu > lscpu
 
   # net stuff
   exectest ifconfig  && ifconfig -v -a  > ifconfig
@@ -286,6 +287,8 @@ cd "${OUTDIR}" || exit 1
     exectest lvdisplay && lvdisplay > lvdisplay 2>lvdisplay.error
 
     exectest dmsetup && dmsetup ls > dmsetup_ls 2>dmsetup_ls.error
+    exectest dmsetup && dmsetup ls --tree > dmsetup_ls_tree 2>dmsetup_ls_tree.error
+    exectest lsblk && lsblk > lsblk 2>lsblk.error
 
     # iSCSI
     if exectest iscsiadm ; then

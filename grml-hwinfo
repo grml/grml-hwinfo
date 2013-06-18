@@ -336,6 +336,12 @@ cd "${OUTDIR}" || exit 1
         echo -e "\n\n" >> sdparm
       fi
 
+      if exectest sg_inq ; then
+        echo -e "sg_inq /dev/${disk}:\n" >> sg_inq
+        sg_inq /dev/$disk >> sg_inq
+        echo -e "\n\n" >> sg_inq
+      fi
+
       file -s /dev/$disk?* | grep -v ": empty" >> file_disk
     done
   fi

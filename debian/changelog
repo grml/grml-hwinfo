@@ -1,3 +1,12 @@
+grml-hwinfo (0.9.0) unstable; urgency=low
+
+  * [11eeed7] Support lscpu, lsblk and dmsetup ls --tree
+  * [63be8b7] Add support for sg_inq from sg3-utils
+  * [3644e97] Read /proc/acpi/info only if the file exists, drop calls to
+    acpi_available
+
+ -- Michael Prokop <mika@grml.org>  Tue, 18 Jun 2013 17:21:19 +0200
+
 grml-hwinfo (0.8.0) unstable; urgency=low
 
   * [058f4d8] Add support retrieving iSCSI information using iscsiadm from

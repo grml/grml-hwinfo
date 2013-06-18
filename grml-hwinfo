@@ -222,7 +222,10 @@ cd "${OUTDIR}" || exit 1
 
   # power management
   exectest laptop-detect  && laptop-detect >/dev/null 2>/dev/null && echo "0" > laptop_detected
-  exectest acpi_available && acpi_available && cat /proc/acpi/info > acpi_info
+  if [ -r /proc/acpi/info ] ; then
+    cat /proc/acpi/info > acpi_info
+  fi
+
   exectest acpi && acpi > acpi 2> acpi.error && acpi -v > acpi.version
   [ -r /proc/apm/ ] && apm > apm
 

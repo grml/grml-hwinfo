@@ -208,11 +208,24 @@ cd "${OUTDIR}" || exit 1
   exectest x86info  && x86info > x86info 2>x86info.2
   exectest lscpu    && lscpu > lscpu
 
-  # net stuff
-  exectest ifconfig  && ifconfig -v -a  > ifconfig
-  exectest ip        && ip route show   > ip_route
-  exectest ip        && ip link show    > ip_link
-  exectest route     && route -n        > route
+  # net stuff, net-tools:
+  exectest ifconfig && ifconfig -v -a > ifconfig
+  exectest route    && route -n       > route
+
+  # net stuff, iproute:
+  exectest ip && ip addrlabel list > ip_addrlabel
+  exectest ip && ip addr show      > ip_addr
+  exectest ip && ip link show      > ip_link
+  exectest ip && ip maddr show     > ip_maddr
+  exectest ip && ip mroute show    > ip_mroute
+  exectest ip && ip mrule show     > ip_mrule
+  exectest ip && ip neigh show     > ip_neigh
+  exectest ip && ip netns list     > ip_netns
+  exectest ip && ip ntable show    > ip_ntable
+  exectest ip && ip route show     > ip_route
+  exectest ip && ip rule show      > ip_rule
+  exectest ip && ip tunnel show    > ip_tunnel
+  exectest ip && ip tuntap show    > ip_tuntap
 
   # software
   if exectest dpkg ; then

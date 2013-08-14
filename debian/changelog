@@ -1,3 +1,9 @@
+grml-hwinfo (0.9.1) unstable; urgency=low
+
+  * [69521ba] Use iproute's ip tool to retrieve all its output
+
+ -- Michael Prokop <mika@grml.org>  Wed, 14 Aug 2013 13:02:27 +0200
+
 grml-hwinfo (0.9.0) unstable; urgency=low
 
   * [11eeed7] Support lscpu, lsblk and dmsetup ls --tree

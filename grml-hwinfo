@@ -242,6 +242,10 @@ cd "${OUTDIR}" || exit 1
   exectest acpi && acpi > acpi 2> acpi.error && acpi -v > acpi.version
   [ -r /proc/apm/ ] && apm > apm
 
+  if exectest mcelog ; then
+    mcelog > mcelog 2>mcelog.error
+  fi
+
   # kernel stuff
   if [ -r /proc/config.gz ] ; then
     zcat /proc/config.gz > kernelconfig
@@ -280,6 +284,10 @@ cd "${OUTDIR}" || exit 1
     exectest dmidecode  && dmidecode > dmidecode
 
     exectest dconf && dconf -o dconf
+
+    if exectest mcelog ; then
+      mcelog --dmi > mcelog_dmi 2>mcelog_dmi.error
+    fi
 
     if [ -x /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl ] ; then
       /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl > decode-dimms 2>decode-dimms.error

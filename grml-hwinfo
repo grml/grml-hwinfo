@@ -289,6 +289,11 @@ cd "${OUTDIR}" || exit 1
       mcelog --dmi > mcelog_dmi 2>mcelog_dmi.error
     fi
 
+    if exectest edac-util ; then
+      edac-util > edac-util 2>edac-util.error
+      edac-util --report=full > edac-util_report 2>edac-util_report.error
+    fi
+
     if [ -x /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl ] ; then
       /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl > decode-dimms 2>decode-dimms.error
     fi

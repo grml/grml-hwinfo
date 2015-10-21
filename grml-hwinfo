@@ -223,6 +223,11 @@ cd "${OUTDIR}" || exit 1
   exectest ip && ip netns list     > ip_netns
   exectest ip && ip ntable show    > ip_ntable
   exectest ip && ip route show     > ip_route
+  exectest ip && if [ -r /etc/iproute2/rt_tables ] ; then
+                   grep -v '^#' /etc/iproute2/rt_tables | while read table name ; do
+                     ip route show table "${table}" > "ip_route_table_${table}"
+                   done
+                 fi
   exectest ip && ip rule show      > ip_rule
   exectest ip && ip tunnel show    > ip_tunnel
   exectest ip && ip tuntap show    > ip_tuntap

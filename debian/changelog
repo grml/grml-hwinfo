@@ -1,3 +1,13 @@
+grml-hwinfo (0.11.0) unstable; urgency=medium
+
+  * [8eca38c] ip: also store table specific route information
+  * [55629e0] Improve shell quoting (thanks to shellcheck)
+  * [87551b7] Fix shell scripting issues discovered by shellcheck
+  * [1b107c8] Save stderr of x86info and discover in *.error instead of *.2
+  * [9010e65] Bump Standards-Version to 3.9.6
+
+ -- Michael Prokop <mika@grml.org>  Wed, 21 Oct 2015 23:19:35 +0200
+
 grml-hwinfo (0.10.0) unstable; urgency=medium
 
   * [43246c9] Support mcelog

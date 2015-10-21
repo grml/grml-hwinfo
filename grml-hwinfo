@@ -134,7 +134,7 @@ exectest() {
 # taken from http://cvs.debian.org/fai/lib/disk-info
 diskandsize() {
   local isdisk major minor blocks device suffix
-  while read major minor blocks device suffix; do
+  while read _ _ blocks device _ ; do
     isdisk=1
     # skip ide cdrom
     [ -f "/proc/ide/${device}/media" ] && grep -q cdrom "/proc/ide/${device}/media" && isdisk=0
@@ -171,46 +171,46 @@ cd "${OUTDIR}" || exit 1
   echo "This might take a few seconds/minutes. Please be patient..."
 
   # some sysinfo
-  date > date
+  date > ./date
   if [ -r /etc/grml_version ] ; then
      cat /etc/grml_version > grml_version
   fi
   if [ -r /etc/debian_version ] ; then
      cat /etc/debian_version > debian_version
   fi
-  uname -a > uname
+  uname -a > ./uname
 
   # disks / devices
   [ -f /proc/scsi/scsi ] && cat /proc/scsi/scsi > scsi
-  exectest lspci && lspci -nn > lspci
+  exectest lspci && lspci -nn > ./lspci
   cat /proc/partitions > partitions
   find /proc/ide/ -name geometry -exec grep . {} \; > proc_ide 2>/dev/null
-  df -h > df 2>/dev/null
+  df -h > ./df 2>/dev/null
   for i in free lsmod mount lsdev lspnp lsusb ; do
-    exectest $i && $i > $i
+    exectest $i && $i > ./$i
   done
-  swapon -s > swapon 2>swapon.error
+  swapon -s > ./swapon 2>./swapon.error
 
   # proc stuff
   for i in cpuinfo interrupts cmdline devices dma fb iomem ioports \
     mdstat meminfo modules mtrr pci version ; do
     [ -r /proc/$i ] && cat /proc/$i > proc_$i
   done
-  exectest sysdump  && sysdump > sysdump 2>sysdump.error
+  exectest sysdump  && sysdump > ./sysdump 2>./sysdump.error
 
   # log
   dmesg > dmesg.cur
 
   # hwinfo
-  exectest discover && discover -v --type-summary --enable-bus all > discover 2> discover.2
+  exectest discover && discover -v --type-summary --enable-bus all > ./discover 2>./discover.2
   exectest hwinfo   && hwinfo log=hwinfo
-  exectest numactl  && numactl --hardware > numactl
-  exectest x86info  && x86info > x86info 2>x86info.2
-  exectest lscpu    && lscpu > lscpu
+  exectest numactl  && numactl --hardware > ./numactl
+  exectest x86info  && x86info > ./x86info 2>./x86info.2
+  exectest lscpu    && lscpu > ./lscpu
 
   # net stuff, net-tools:
-  exectest ifconfig && ifconfig -v -a > ifconfig
-  exectest route    && route -n       > route
+  exectest ifconfig && ifconfig -v -a > ./ifconfig
+  exectest route    && route -n       > ./route
 
   # net stuff, iproute:
   exectest ip && ip addrlabel list > ip_addrlabel
@@ -224,7 +224,7 @@ cd "${OUTDIR}" || exit 1
   exectest ip && ip ntable show    > ip_ntable
   exectest ip && ip route show     > ip_route
   exectest ip && if [ -r /etc/iproute2/rt_tables ] ; then
-                   grep -v '^#' /etc/iproute2/rt_tables | while read table name ; do
+                   grep -v '^#' /etc/iproute2/rt_tables | while read table _ ; do
                      ip route show table "${table}" > "ip_route_table_${table}"
                    done
                  fi
@@ -244,11 +244,11 @@ cd "${OUTDIR}" || exit 1
     cat /proc/acpi/info > acpi_info
   fi
 
-  exectest acpi && acpi > acpi 2> acpi.error && acpi -v > acpi.version
-  [ -r /proc/apm/ ] && apm > apm
+  exectest acpi && acpi > ./acpi 2>acpi.error && acpi -v > ./acpi.version
+  [ -r /proc/apm/ ] && apm > ./apm
 
   if exectest mcelog ; then
-    mcelog > mcelog 2>mcelog.error
+    mcelog > ./mcelog 2>./mcelog.error
   fi
 
   # kernel stuff
@@ -264,10 +264,10 @@ cd "${OUTDIR}" || exit 1
 
   # X stuff
   if [ -n "${DISPLAY}" ] ; then
-    exectest xviddetect  && xviddetect         > xviddetect
-    exectest xvidtune    && xvidtune -show     > xdivtune
-    exectest xrandr      && xrandr             > xrandr
-    exectest xdpyinfo    && xdpyinfo           > xdpyinfo
+    exectest xviddetect  && xviddetect         > ./xviddetect
+    exectest xvidtune    && xvidtune -show     > ./xdivtune
+    exectest xrandr      && xrandr             > ./xrandr
+    exectest xdpyinfo    && xdpyinfo           > ./xdpyinfo
     X -version > x_version 2>&1
   fi
 
@@ -285,8 +285,8 @@ cd "${OUTDIR}" || exit 1
   else
     echo "running as root" > root
     disk_info
-    exectest sfdisk     && sfdisk -d > sfdisk 2>sfdisk.error
-    exectest dmidecode  && dmidecode > dmidecode
+    exectest sfdisk     && sfdisk -d > ./sfdisk 2>./sfdisk.error
+    exectest dmidecode  && dmidecode > ./dmidecode
 
     exectest dconf && dconf -o dconf
 
@@ -295,36 +295,36 @@ cd "${OUTDIR}" || exit 1
     fi
 
     if exectest edac-util ; then
-      edac-util > edac-util 2>edac-util.error
+      edac-util > ./edac-util 2>./edac-util.error
       edac-util --report=full > edac-util_report 2>edac-util_report.error
     fi
 
     if exectest decode-dimms ; then
-      decode-dimms > decode-dimms 2>decode-dimms.error
+      decode-dimms > ./decode-dimms 2>./decode-dimms.error
     elif [ -x /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl ] ; then
       /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl > decode-dimms 2>decode-dimms.error
     fi
 
     # proxmox
-    exectest qm && qm list > qm 2>qm.error
+    exectest qm && qm list > ./qm 2>./qm.error
     # libvirt
-    exectest virsh && virsh list >virsh 2>virsh.error
+    exectest virsh && virsh list >./virsh 2>./virsh.error
     # openvz
-    exectest vzlist && vzlist >vzlist 2>vzlist.error
+    exectest vzlist && vzlist >./vzlist 2>./vzlist.error
     # vserver
-    exectest vserver-stat && vserver-stat >vserver-stat 2>vserver-stat.error
+    exectest vserver-stat && vserver-stat >./vserver-stat 2>./vserver-stat.error
 
-    exectest mdadm && mdadm --detail /dev/md[0-9]* >> mdadm 2>mdadm.error
+    exectest mdadm && mdadm --detail /dev/md[0-9]* >> ./mdadm 2>./mdadm.error
 
     # LVM
-    exectest pvs && pvs > pvs 2>pvs.error
-    exectest vgs && vgs > vgs 2>vgs.error
-    exectest lvs && lvs > lvs 2>lvs.error
-    exectest lvdisplay && lvdisplay > lvdisplay 2>lvdisplay.error
+    exectest pvs && pvs > ./pvs 2>./pvs.error
+    exectest vgs && vgs > ./vgs 2>./vgs.error
+    exectest lvs && lvs > ./lvs 2>./lvs.error
+    exectest lvdisplay && lvdisplay > ./lvdisplay 2>./lvdisplay.error
 
     exectest dmsetup && dmsetup ls > dmsetup_ls 2>dmsetup_ls.error
     exectest dmsetup && dmsetup ls --tree > dmsetup_ls_tree 2>dmsetup_ls_tree.error
-    exectest lsblk && lsblk > lsblk 2>lsblk.error
+    exectest lsblk && lsblk > ./lsblk 2>./lsblk.error
 
     # iSCSI
     if exectest iscsiadm ; then
@@ -337,44 +337,44 @@ cd "${OUTDIR}" || exit 1
     fi
 
     if exectest lsscsi ; then
-      lsscsi    > lsscsi 2>lsscsi.error
-      lsscsi -t > lsscsi_transport 2>lsscsi_transport.error
+      lsscsi    > ./lsscsi 2>./lsscsi.error
+      lsscsi -t > ./lsscsi_transport 2>./lsscsi_transport.error
     fi
 
     for disk in $disklist; do
       if exectest smartctl ; then
         echo -e "smartctl -a /dev/${disk}:\n" >> smartctl
-        smartctl -a "/dev/$disk" >> smartctl
-        echo -e "\n\n" >> smartctl
+        smartctl -a "/dev/$disk" >> ./smartctl
+        echo -e "\n\n" >> ./smartctl
       fi
 
       if exectest hdparm ; then
         echo -e "hdparm -iv /dev/${disk}:\n" >> hdparm
-        hdparm -iv "/dev/$disk" >> hdparm
+        hdparm -iv "/dev/$disk" >> ./hdparm
         echo -e "\n\n" >> hdparm
       fi
 
       if exectest fdisk ; then
         echo -e "fdisk -lu /dev/${disk}:\n" >> fdisk
-        fdisk -lu "/dev/$disk" >>fdisk 2>>fdisk.error
+        fdisk -lu "/dev/$disk" >> ./fdisk 2>> ./fdisk.error
         echo -e "\n\n" >> fdisk
       fi
 
       if exectest parted ; then
         echo -e "parted -s /dev/${disk}:\n" >> parted
-        parted -s "/dev/$disk" print >> parted
+        parted -s "/dev/$disk" print >> ./parted
         echo -e "\n\n" >> parted
       fi
 
       if exectest sdparm ; then
         echo -e "sdparm --all --long /dev/${disk}:\n" >> sdparm
-        sdparm --all --long "/dev/$disk" >> sdparm
+        sdparm --all --long "/dev/$disk" >> ./sdparm
         echo -e "\n\n" >> sdparm
       fi
 
       if exectest sg_inq ; then
         echo -e "sg_inq /dev/${disk}:\n" >> sg_inq
-        sg_inq "/dev/$disk" >> sg_inq
+        sg_inq "/dev/$disk" >> ./sg_inq
         echo -e "\n\n" >> sg_inq
       fi
 
@@ -395,6 +395,7 @@ cd "${WORKING_DIR}"
 # create tarball
 if [ -n "$GENERATE_FILE" ] ; then
   tar acf "${OUTFILE}" "${OUTDIRNAME}"
+  # shellcheck disable=SC2012
   [ -r "$OUTFILE" ] && echo "$OUTFILE ($(ls -ahl -- "$OUTFILE" | awk '{print $5}')) has been generated."
 fi
 

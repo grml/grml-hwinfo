@@ -12,7 +12,7 @@
 
 # variables
 UNAME="$(uname -r)"
-PN="$(basename $0)"
+PN="$(basename "$0")"
 [ -n "$WORKING_DIR" -a -d "$WORKING_DIR" ] || WORKING_DIR=$(pwd)
 VERSION='***UNRELEASED***'
 
@@ -101,11 +101,11 @@ done
 # Generate output/temporary directory name & path, and output file path
 [ -n "$OUTDIRNAME" ] || OUTDIRNAME="grml-hwinfo-${DATE}"
 OUTDIR="${WORKING_DIR}/${OUTDIRNAME}"
-mkdir "${OUTDIR}" || { echo 'Directory "'${OUTDIR}'" already exists, aborting.'>&2 ; exit 1; }
+mkdir "${OUTDIR}" || { echo "Directory '${OUTDIR}' already exists, aborting." >&2 ; exit 1; }
 
 if [ -n "$GENERATE_FILE" ] ; then
   [ -n "$OUTFILE" ] && OUTFILE_="$OUTFILE" || OUTFILE_="${OUTDIR}.tar.bz2"
-  [ -e "${OUTFILE_}" ] && { echo 'File "'${OUTFILE_}'" already exists, aborting.'>&2 ; rm -r "${OUTDIR}"; exit 1; }
+  [ -e "${OUTFILE_}" ] && { echo "File '${OUTFILE_}' already exists, aborting." >&2 ; rm -r "${OUTDIR}"; exit 1; }
   OUTFILE=${OUTFILE_}
   touch "${OUTFILE}"
 fi
@@ -121,7 +121,7 @@ exectest() {
     echo 'Usage: exectest <binary>'>&2
     return 1
   else
-    if test -e "$(which $1)" ; then
+    if test -e "$(which "$1")" ; then
       return 0
     else
       grep -q "^$1"'$' missing_tools 2>/dev/null || echo "$1" >> missing_tools
@@ -137,7 +137,7 @@ diskandsize() {
   while read major minor blocks device suffix; do
     isdisk=1
     # skip ide cdrom
-    [ -f /proc/ide/$device/media ] && grep -q cdrom /proc/ide/$device/media && isdisk=0
+    [ -f "/proc/ide/${device}/media" ] && grep -q cdrom "/proc/ide/${device}/media" && isdisk=0
     [ "$isdisk" -eq 1 ] && echo "$device $blocks"
   done
 }
@@ -145,9 +145,9 @@ diskandsize() {
 list_disks() {
   # print only every second entry; used by disk_info
   i=0
-  for ent in $@; do
+  for ent in "$@" ; do
     if [ "$i" -eq 0 ]; then
-      echo $ent
+      echo "$ent"
       i=1
     else
       i=0
@@ -157,9 +157,9 @@ list_disks() {
 
 disk_info() {
   # the variable holds a space separated list of devices and their block size
-  device_size=`grep -E ' cciss/c.d.$| ida/c.d.$| rd/c.d.$| hd.$| sd.$|/disc$' /proc/partitions | diskandsize`
+  device_size=$(grep -E ' cciss/c.d.$| ida/c.d.$| rd/c.d.$| hd.$| sd.$|/disc$' /proc/partitions | diskandsize)
   # a list of all local disks, without size
-  disklist=`list_disks $device_size`
+  disklist=$(list_disks "$device_size")
 }
 
 
@@ -255,12 +255,12 @@ cd "${OUTDIR}" || exit 1
   if [ -r /proc/config.gz ] ; then
     zcat /proc/config.gz > kernelconfig
   else
-    [ -r /boot/config-$UNAME ] && cat /boot/config-$UNAME > kernelconfig
+    [ -r "/boot/config-${UNAME}" ] && cat "/boot/config-${UNAME}" > kernelconfig
   fi
 
-  exectest dpkg && COLUMNS=1000 dpkg -l linux-image-$UNAME 2>running_kernel.error \
-           | grep linux-image-$UNAME | tr -s ' ' > running_kernel 2>>running_kernel.error
-  dpkg -S /boot/vmlinuz-$(uname -r) >> running_kernel 2>>running_kernel.error
+  exectest dpkg && COLUMNS=1000 dpkg -l "linux-image-${UNAME}" 2>running_kernel.error \
+           | grep "linux-image-${UNAME}" | tr -s ' ' > running_kernel 2>>running_kernel.error
+  dpkg -S "/boot/vmlinuz-$(uname -r)" >> running_kernel 2>>running_kernel.error
 
   # X stuff
   if [ -n "${DISPLAY}" ] ; then
@@ -344,48 +344,48 @@ cd "${OUTDIR}" || exit 1
     for disk in $disklist; do
       if exectest smartctl ; then
         echo -e "smartctl -a /dev/${disk}:\n" >> smartctl
-        smartctl -a /dev/$disk >> smartctl
+        smartctl -a "/dev/$disk" >> smartctl
         echo -e "\n\n" >> smartctl
       fi
 
       if exectest hdparm ; then
         echo -e "hdparm -iv /dev/${disk}:\n" >> hdparm
-        hdparm -iv /dev/$disk >> hdparm
+        hdparm -iv "/dev/$disk" >> hdparm
         echo -e "\n\n" >> hdparm
       fi
 
       if exectest fdisk ; then
         echo -e "fdisk -lu /dev/${disk}:\n" >> fdisk
-        fdisk -lu /dev/$disk >>fdisk 2>>fdisk.error
+        fdisk -lu "/dev/$disk" >>fdisk 2>>fdisk.error
         echo -e "\n\n" >> fdisk
       fi
 
       if exectest parted ; then
         echo -e "parted -s /dev/${disk}:\n" >> parted
-        parted -s /dev/$disk print >> parted
+        parted -s "/dev/$disk" print >> parted
         echo -e "\n\n" >> parted
       fi
 
       if exectest sdparm ; then
         echo -e "sdparm --all --long /dev/${disk}:\n" >> sdparm
-        sdparm --all --long /dev/$disk >> sdparm
+        sdparm --all --long "/dev/$disk" >> sdparm
         echo -e "\n\n" >> sdparm
       fi
 
       if exectest sg_inq ; then
         echo -e "sg_inq /dev/${disk}:\n" >> sg_inq
-        sg_inq /dev/$disk >> sg_inq
+        sg_inq "/dev/$disk" >> sg_inq
         echo -e "\n\n" >> sg_inq
       fi
 
-      file -s /dev/$disk?* | grep -v ": empty" >> file_disk
+      file -s "/dev/${disk}"?* | grep -v ": empty" >> file_disk
     done
   fi
 )
 
 # get rid of empty files
 for file in *.error ; do
-  test -s $file || rm $file
+  test -s "$file" || rm -- "$file"
 done
 
 echo
@@ -395,7 +395,7 @@ cd "${WORKING_DIR}"
 # create tarball
 if [ -n "$GENERATE_FILE" ] ; then
   tar acf "${OUTFILE}" "${OUTDIRNAME}"
-  [ -r "$OUTFILE" ] && echo "$OUTFILE ("$(ls -ahl "$OUTFILE" | awk '{print $5}')") has been generated."
+  [ -r "$OUTFILE" ] && echo "$OUTFILE ($(ls -ahl -- "$OUTFILE" | awk '{print $5}')) has been generated."
 fi
 
 # remove (temporary) output directory if needed, else keep it, as it doubles

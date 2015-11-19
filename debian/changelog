@@ -1,3 +1,13 @@
+grml-hwinfo (0.12.0) unstable; urgency=medium
+
+  * [fb0e356] Support options --force + --quiet for usage with cron
+  * [fc34c5d] Improve local disk detection for recent kernel changes
+  * [c5989b9] Fix shellcheck issue with quoting
+  * [5afa0d8] Don't use working directory when --output-directory option
+    is used
+
+ -- Michael Prokop <mika@grml.org>  Thu, 19 Nov 2015 15:48:55 +0100
+
 grml-hwinfo (0.11.0) unstable; urgency=medium
 
   * [8eca38c] ip: also store table specific route information

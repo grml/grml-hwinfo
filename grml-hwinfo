@@ -112,7 +112,12 @@ fi
 
 # Generate output/temporary directory name & path, and output file path
 [ -n "$OUTDIRNAME" ] || OUTDIRNAME="grml-hwinfo-${DATE}"
-OUTDIR="${WORKING_DIR}/${OUTDIRNAME}"
+if $_opt_output_directory ; then
+  OUTDIR="${OUTDIRNAME}"
+else
+  OUTDIR="${WORKING_DIR}/${OUTDIRNAME}"
+fi
+
 if $_opt_force ; then
   mkdir -p "${OUTDIR}"
 else

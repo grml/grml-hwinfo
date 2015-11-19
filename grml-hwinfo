@@ -156,7 +156,7 @@ checkdisk() {
   while read _ _ _ device _ ; do
     isdisk=1
     # skip CDROMs
-    [ "$(stat -c %G /dev/$device)" = "disk" ] || isdisk=0
+    [ "$(stat -c %G /dev/"${device}")" = "disk" ] || isdisk=0
     [ "$isdisk" -eq 1 ] && echo "$device"
   done
 }

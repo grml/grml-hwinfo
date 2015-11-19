@@ -23,13 +23,13 @@ export LC_ALL=C
 TIMESTAMP='+%F--%H-%M-%S-%Z'
 DATE="$(date $TIMESTAMP)"
 
-echo "$PN ${VERSION} - collect hardware information"
-
 # defaults
 GENERATE_FILE='1'
 GENERATE_DIRECTORY=''
 _opt_output_directory=false
 _opt_output_file=false
+_opt_quiet=false
+_opt_force=false
 
 usage() {
   echo "
@@ -45,13 +45,15 @@ usage() {
   -d, --directory            Create grml-hwinfo-TIMESTAMP as a directory (no file)
   -f, --file                 Create grml-hwinfo-TIMESTAMP.tar.bz2 [default action]
   -h, --help                 Display this help message
+  -q, --quiet                Don't display informational text (useful for cron usage)
+  --force                    Don't abort but overwrite possibly existing output file
   --output-directory <dir>   Store output files in specified directory
-  --output-file <file>       Store output in specified filename (tar.bz2 format)
+  --output-file <file>       Store output in specified filename (tar.XX format)
   "
 }
 
-CMDLINE_OPTS=output-directory:,output-file:,both,directory,file,help
-_opt_temp=$(getopt --name grml-hwinfo -o +bdfh --long $CMDLINE_OPTS -- "$@")
+CMDLINE_OPTS=output-directory:,output-file:,both,directory,file,help,quiet,force
+_opt_temp=$(getopt --name grml-hwinfo -o +bdfhq --long $CMDLINE_OPTS -- "$@")
 if [ $? -ne 0 ]; then
   echo "Try 'grml-hwinfo --help' for more information." >&2
   exit 1
@@ -87,6 +89,12 @@ while :; do
     GENERATE_DIRECTORY='1'
     GENERATE_FILE='1'
     ;;
+  -q|--quiet)
+    _opt_quiet=true
+    ;;
+  --force)
+    _opt_force=true
+    ;;
   --)
     shift; break
     ;;
@@ -98,21 +106,31 @@ while :; do
   shift
 done
 
+if ! $_opt_quiet ; then
+  echo "$PN ${VERSION} - collect hardware information"
+fi
+
 # Generate output/temporary directory name & path, and output file path
 [ -n "$OUTDIRNAME" ] || OUTDIRNAME="grml-hwinfo-${DATE}"
 OUTDIR="${WORKING_DIR}/${OUTDIRNAME}"
-mkdir "${OUTDIR}" || { echo "Directory '${OUTDIR}' already exists, aborting." >&2 ; exit 1; }
+if $_opt_force ; then
+  mkdir -p "${OUTDIR}"
+else
+  mkdir "${OUTDIR}" || { echo "Directory '${OUTDIR}' already exists, aborting." >&2 ; exit 1; }
+fi
 
 if [ -n "$GENERATE_FILE" ] ; then
   [ -n "$OUTFILE" ] && OUTFILE_="$OUTFILE" || OUTFILE_="${OUTDIR}.tar.bz2"
-  [ -e "${OUTFILE_}" ] && { echo "File '${OUTFILE_}' already exists, aborting." >&2 ; rm -r "${OUTDIR}"; exit 1; }
+  if ! $_opt_force ; then
+    [ -e "${OUTFILE_}" ] && { echo "File '${OUTFILE_}' already exists, aborting." >&2 ; rm -r "${OUTDIR}"; exit 1; }
+  fi
   OUTFILE=${OUTFILE_}
   touch "${OUTFILE}"
 fi
 
 if [ "$(id -u)" != "0" ] ; then
   NOTROOT=1
-  echo "W: Running without root permissions. Not all data will be collected."
+  $_opt_quiet || echo "W: Running without root permissions. Not all data will be collected."
 fi
 
 # check whether a binary is available and executable
@@ -124,7 +142,9 @@ exectest() {
     if test -e "$(which "$1")" ; then
       return 0
     else
-      grep -q "^$1"'$' missing_tools 2>/dev/null || echo "$1" >> missing_tools
+      if ! grep -q "^$1"'$' missing_tools 2>/dev/null ; then
+        $_opt_quiet || echo "$1" >> missing_tools
+      fi
       return 1
     fi
   fi
@@ -165,10 +185,12 @@ disk_info() {
 
 cd "${OUTDIR}" || exit 1
 (
-  [ -n "$GENERATE_FILE" ]      && echo "Output file:      $OUTFILE"
-  [ -n "$GENERATE_DIRECTORY" ] && echo "Output directory: $OUTDIR"
-  echo
-  echo "This might take a few seconds/minutes. Please be patient..."
+  if ! $_opt_quiet ; then
+    [ -n "$GENERATE_FILE" ]      && echo "Output file:      $OUTFILE"
+    [ -n "$GENERATE_DIRECTORY" ] && echo "Output directory: $OUTDIR"
+    echo
+    echo "This might take a few seconds/minutes. Please be patient..."
+  fi
 
   # some sysinfo
   date > ./date
@@ -388,15 +410,17 @@ for file in *.error ; do
   test -s "$file" || rm -- "$file"
 done
 
-echo
+$_opt_quiet || echo
 
 cd "${WORKING_DIR}"
 
 # create tarball
 if [ -n "$GENERATE_FILE" ] ; then
   tar acf "${OUTFILE}" "${OUTDIRNAME}"
-  # shellcheck disable=SC2012
-  [ -r "$OUTFILE" ] && echo "$OUTFILE ($(ls -ahl -- "$OUTFILE" | awk '{print $5}')) has been generated."
+  if ! $_opt_quiet ; then
+    # shellcheck disable=SC2012
+    [ -r "$OUTFILE" ] && echo "$OUTFILE ($(ls -ahl -- "$OUTFILE" | awk '{print $5}')) has been generated."
+  fi
 fi
 
 # remove (temporary) output directory if needed, else keep it, as it doubles
@@ -404,7 +428,9 @@ fi
 if [ -z "$GENERATE_DIRECTORY" ] ; then
   rm -r "${OUTDIR}"
 else
-  [ -r "${OUTDIR}" ] && echo "${OUTDIR} has been generated."
+  if ! $_opt_quiet ; then
+    [ -r "${OUTDIR}" ] && echo "${OUTDIR} has been generated."
+  fi
 fi
 
 exit 0

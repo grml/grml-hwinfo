@@ -361,7 +361,7 @@ cd "${OUTDIR}" || exit 1
 
       if exectest hdparm ; then
         echo -e "hdparm -iv /dev/${disk}:\n" >> hdparm
-        hdparm -iv "/dev/$disk" >> ./hdparm
+        hdparm -iv "/dev/$disk" >> ./hdparm 2>> ./hdparm.error
         echo -e "\n\n" >> hdparm
       fi
 
@@ -385,7 +385,7 @@ cd "${OUTDIR}" || exit 1
 
       if exectest sg_inq ; then
         echo -e "sg_inq /dev/${disk}:\n" >> sg_inq
-        sg_inq "/dev/$disk" >> ./sg_inq
+        sg_inq "/dev/$disk" >> ./sg_inq 2>> ./sg_inq.error
         echo -e "\n\n" >> sg_inq
       fi
 

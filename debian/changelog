@@ -1,3 +1,14 @@
+grml-hwinfo (0.13.0) unstable; urgency=medium
+
+  * [588c3c8] Redirect hdparm + sg_inq errors to according .error files
+  * [49cba96] Bump Standards-Version to 3.9.8
+  * [8c8df09] Use SSL for Homepage + Vcs-Browser URLs
+  * [8618504] Bump debian/compat to 9
+  * [3d85ad8] Add debian/source/format with 3.0 (native)
+  * [9e75ff8] debian/rules: replace deprecated dh_clean -k with dh_prep
+
+ -- Michael Prokop <mika@grml.org>  Fri, 27 Jan 2017 16:14:55 +0100
+
 grml-hwinfo (0.12.0) unstable; urgency=medium
 
   * [fb0e356] Support options --force + --quiet for usage with cron

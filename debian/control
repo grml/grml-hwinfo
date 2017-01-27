@@ -4,9 +4,9 @@ Priority: optional
 Maintainer: Michael Prokop <mika@grml.org>
 Build-Depends: debhelper (>= 5.0.0)
 Standards-Version: 3.9.8
-Homepage: http://git.grml.org/?p=grml-hwinfo.git
+Homepage: https://git.grml.org/?p=grml-hwinfo.git
 Vcs-git: git://git.grml.org/grml-hwinfo.git
-Vcs-Browser: http://git.grml.org/?p=grml-hwinfo.git
+Vcs-Browser: https://git.grml.org/?p=grml-hwinfo.git
 Origin: Grml
 Bugs: mailto:bugs@grml.org
 

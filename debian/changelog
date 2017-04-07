@@ -1,3 +1,9 @@
+grml-hwinfo (0.13.1) unstable; urgency=medium
+
+  * [3f7e605] Provide `acpi --everything` output in file `acpi.everything`
+
+ -- Michael Prokop <mika@grml.org>  Fri, 07 Apr 2017 11:52:36 +0200
+
 grml-hwinfo (0.13.0) unstable; urgency=medium
 
   * [588c3c8] Redirect hdparm + sg_inq errors to according .error files

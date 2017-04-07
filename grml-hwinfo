@@ -255,7 +255,11 @@ cd "${OUTDIR}" || exit 1
     cat /proc/acpi/info > acpi_info
   fi
 
-  exectest acpi && acpi > ./acpi 2>acpi.error && acpi -v > ./acpi.version
+  if exectest acpi ; then
+    acpi > ./acpi 2>acpi.error
+    acpi --everything > ./acpi.everything 2>./acpi.everything.error
+    acpi -v > ./acpi.version
+  fi
   [ -r /proc/apm/ ] && apm > ./apm
 
   if exectest mcelog ; then

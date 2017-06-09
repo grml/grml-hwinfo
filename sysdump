@@ -62,7 +62,15 @@ sub dump_value($$)
 	my $level = shift;
 	my $file = shift;
 
-	open (FILE, "<$file") || print "can't open $file: $!";
+	if ($file =~ "/sys/kernel/debug/.*") {
+		print("ignoring file $file\n");
+		return 0;
+	}
+
+	if (!open (FILE, "<$file")) {
+		print STDERR "can't open $file: '$!'\n";
+		return 0;
+	}
 
 	my $value;
 	{	local $/;

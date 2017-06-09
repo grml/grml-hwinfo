@@ -1,3 +1,10 @@
+grml-hwinfo (0.13.2) unstable; urgency=medium
+
+  * [d116a7a] sysdump: ignore files inside /sys/kernel/debug to avoid
+    hanging
+
+ -- Michael Prokop <mika@grml.org>  Fri, 09 Jun 2017 22:26:25 +0200
+
 grml-hwinfo (0.13.1) unstable; urgency=medium
 
   * [3f7e605] Provide `acpi --everything` output in file `acpi.everything`

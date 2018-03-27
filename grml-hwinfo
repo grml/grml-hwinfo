@@ -229,7 +229,7 @@ cd "${OUTDIR}" || exit 1
   exectest ip && ip link show      > ip_link
   exectest ip && ip maddr show     > ip_maddr
   exectest ip && ip mroute show    > ip_mroute
-  exectest ip && ip mrule show     > ip_mrule
+  exectest ip && ip mrule show     > ip_mrule 2>ip_mrule.error
   exectest ip && ip neigh show     > ip_neigh
   exectest ip && ip netns list     > ip_netns
   exectest ip && ip ntable show    > ip_ntable

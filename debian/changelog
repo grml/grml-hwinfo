@@ -1,3 +1,10 @@
+grml-hwinfo (0.13.3) unstable; urgency=medium
+
+  * [e8bebe3] Redirect `ip mrule show` errors to ip_mrule.error
+  * [77076a3] Bump Standards-Version to 4.1.4
+
+ -- Michael Prokop <mika@grml.org>  Fri, 25 May 2018 13:53:54 +0200
+
 grml-hwinfo (0.13.2) unstable; urgency=medium
 
   * [d116a7a] sysdump: ignore files inside /sys/kernel/debug to avoid

@@ -1,3 +1,10 @@
+grml-hwinfo (0.14.0) unstable; urgency=medium
+
+  * [b0e90e6] Provide output of `efibootmgr -v` in file efibootmgr. Thanks
+    to Ralf Moll for the suggestion
+
+ -- Michael Prokop <mika@grml.org>  Wed, 31 Oct 2018 10:18:30 +0100
+
 grml-hwinfo (0.13.3) unstable; urgency=medium
 
   * [e8bebe3] Redirect `ip mrule show` errors to ip_mrule.error

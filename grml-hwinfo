@@ -219,6 +219,9 @@ cd "${OUTDIR}" || exit 1
   exectest x86info  && x86info > ./x86info 2>./x86info.error
   exectest lscpu    && lscpu > ./lscpu
 
+  # EFI
+  exectest efibootmgr && efibootmgr -v > efibootmgr
+
   # net stuff, net-tools:
   exectest ifconfig && ifconfig -v -a > ./ifconfig
   exectest route    && route -n       > ./route

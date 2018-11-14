@@ -66,6 +66,10 @@ sub dump_value($$)
 		print("ignoring file $file\n");
 		return 0;
 	}
+	if ($file =~ "/sys/kernel/security/apparmor/revision") {
+		print("ignoring file $file\n");
+		return 0;
+	}
 
 	if (!open (FILE, "<$file")) {
 		print STDERR "can't open $file: '$!'\n";

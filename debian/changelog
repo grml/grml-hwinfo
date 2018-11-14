@@ -1,3 +1,16 @@
+grml-hwinfo (0.14.1) unstable; urgency=medium
+
+  [ Darshaka Pathirana ]
+  * [2a46773] sysdump: ignore /sys/kernel/security/apparmor/revision to
+    avoid hanging
+
+  [ Michael Prokop ]
+  * [325d29e] Bump Standards-Version to 4.2.1
+  * [703ca14] debian/rules: use /usr/share/dpkg/pkg-info.mk for
+    identifying version number
+
+ -- Michael Prokop <mika@grml.org>  Wed, 14 Nov 2018 21:15:49 +0100
+
 grml-hwinfo (0.14.0) unstable; urgency=medium
 
   * [b0e90e6] Provide output of `efibootmgr -v` in file efibootmgr. Thanks

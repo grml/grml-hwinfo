@@ -9,7 +9,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-VERSION:=$(shell dpkg-parsechangelog | awk '/Version: / { print $$2 }')
+include /usr/share/dpkg/pkg-info.mk
 
 build: build-arch build-indep
 
@@ -50,7 +50,7 @@ binary-indep: build install
 	dh_installchangelogs
 	dh_installdocs
 	dh_installman grml-hwinfo.1 sysdump.8
-	sed -i -e "s/^VERSION='\*\*\*UNRELEASED\*\*\*'/VERSION='$(VERSION)'/" $(CURDIR)/debian/grml-hwinfo/usr/bin/grml-hwinfo
+	sed -i -e "s/^VERSION='\*\*\*UNRELEASED\*\*\*'/VERSION='$(DEB_VERSION)'/" $(CURDIR)/debian/grml-hwinfo/usr/bin/grml-hwinfo
 	dh_link
 	dh_strip
 	dh_compress

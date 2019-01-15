@@ -323,6 +323,10 @@ cd "${OUTDIR}" || exit 1
       /usr/share/doc/lm-sensors/examples/eeprom/decode-dimms.pl > decode-dimms 2>decode-dimms.error
     fi
 
+    if exectest acpidump ; then
+      acpidump > ./acpidump 2>./acpidump.error
+    fi
+
     # proxmox
     exectest qm && qm list > ./qm 2>./qm.error
     # libvirt

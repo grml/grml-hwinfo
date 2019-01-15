@@ -15,6 +15,7 @@ Architecture: all
 Depends: sysfsutils,
          ${misc:Depends}
 Recommends: acpi,
+            acpica-tools,
             dconf,
             dmidecode,
             dmsetup,

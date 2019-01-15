@@ -300,6 +300,10 @@ cd "${OUTDIR}" || exit 1
     cp /var/log/$i log_$i 2>/dev/null
   done
 
+  if [ -r "$HOME"/.local/share/xorg/Xorg.0.log ] ; then
+    cp "$HOME"/.local/share/xorg/Xorg.0.log user_Xorg.0.log
+  fi
+
   cp /etc/X11/xorg.conf    xorg.conf    2>/dev/null
   cp /etc/modules          modules      2>/dev/null
   cp /etc/X11/XF86Config-4 XF86Config-4 2>/dev/null

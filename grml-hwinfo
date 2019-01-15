@@ -338,6 +338,10 @@ cd "${OUTDIR}" || exit 1
       acpidump > ./acpidump 2>./acpidump.error
     fi
 
+    if exectest mokutil ; then
+      mokutil --sb-state > ./mokutil_state 2>./mokutil_state.error
+    fi
+
     # proxmox
     exectest qm && qm list > ./qm 2>./qm.error
     # libvirt

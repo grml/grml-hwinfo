@@ -198,9 +198,15 @@ cd "${OUTDIR}" || exit 1
   cat /proc/partitions > partitions
   find /proc/ide/ -name geometry -exec grep . {} \; > proc_ide 2>/dev/null
   df -h > ./df 2>/dev/null
-  for i in free lsmod mount lsdev lspnp lsusb ; do
+  for i in free lsmod mount lsdev lspnp ; do
     exectest $i && $i > ./$i
   done
+
+  if exectest lsusb ; then
+    lsusb    > ./lsusb
+    lsusb -v > ./lsusb_verbose 2>./lsusb_verbose.error
+  fi
+
   swapon -s > ./swapon 2>./swapon.error
 
   # proc stuff

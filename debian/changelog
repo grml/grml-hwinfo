@@ -1,3 +1,15 @@
+grml-hwinfo (0.15.0) unstable; urgency=medium
+
+  * [2c2398a] Recommend acpica-tools package and provide acpidump output
+    (as root)
+  * [90c0786] Provide output of verbose lspci run in file lspci_verbose
+  * [3bece22] Log output of verbose lsusb run in file lsusb_verbose
+  * [4900106] Store "$HOME"/.local/share/xorg/Xorg.0.log (if available) as
+    user_Xorg.0.log
+  * [ae9ba96] Report SecureBoot state via mokutil
+
+ -- Michael Prokop <mika@grml.org>  Tue, 15 Jan 2019 10:40:23 +0100
+
 grml-hwinfo (0.14.1) unstable; urgency=medium
 
   [ Darshaka Pathirana ]

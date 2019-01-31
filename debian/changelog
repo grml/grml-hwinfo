@@ -1,3 +1,11 @@
+grml-hwinfo (0.15.1) unstable; urgency=medium
+
+  * [d77edf4] Record uptime (/proc/uptime in `proc_uptime` and uptime(1)
+    in file `uptime`) Thanks to Ralf Moll for the suggestion
+  * [8e5cda9] Bump Standards-Version to 4.3.0
+
+ -- Michael Prokop <mika@grml.org>  Thu, 31 Jan 2019 13:41:45 +0100
+
 grml-hwinfo (0.15.0) unstable; urgency=medium
 
   * [2c2398a] Recommend acpica-tools package and provide acpidump output

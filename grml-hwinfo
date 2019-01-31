@@ -211,10 +211,12 @@ cd "${OUTDIR}" || exit 1
 
   # proc stuff
   for i in cpuinfo interrupts cmdline devices dma fb iomem ioports \
-    mdstat meminfo modules mtrr pci version ; do
+    mdstat meminfo modules mtrr pci uptime version ; do
     [ -r /proc/$i ] && cat /proc/$i > proc_$i
   done
   exectest sysdump  && sysdump > ./sysdump 2>./sysdump.error
+
+  exectest uptime && uptime > ./uptime 2>./uptime.error
 
   # log
   dmesg > dmesg.cur

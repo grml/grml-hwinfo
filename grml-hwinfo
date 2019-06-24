@@ -216,6 +216,8 @@ cd "${OUTDIR}" || exit 1
   done
   exectest sysdump  && sysdump > ./sysdump 2>./sysdump.error
 
+  exectest cpuid && cpuid > ./cpuid 2>./cpuid.error
+
   exectest uptime && uptime > ./uptime 2>./uptime.error
 
   # log

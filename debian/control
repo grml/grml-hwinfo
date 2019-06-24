@@ -16,6 +16,7 @@ Depends: sysfsutils,
          ${misc:Depends}
 Recommends: acpi,
             acpica-tools,
+            cpuid,
             dconf,
             dmidecode,
             dmsetup,

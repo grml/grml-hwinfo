@@ -1,3 +1,9 @@
+grml-hwinfo (0.15.2) unstable; urgency=medium
+
+  * [c8495ee] Store cpuid output in file `cpuid`, add cpuid to Recommends
+
+ -- Michael Prokop <mika@grml.org>  Thu, 11 Jul 2019 17:25:05 +0200
+
 grml-hwinfo (0.15.1) unstable; urgency=medium
 
   * [d77edf4] Record uptime (/proc/uptime in `proc_uptime` and uptime(1)

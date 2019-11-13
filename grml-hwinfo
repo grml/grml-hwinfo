@@ -229,6 +229,7 @@ cd "${OUTDIR}" || exit 1
   exectest numactl  && numactl --hardware > ./numactl
   exectest x86info  && x86info > ./x86info 2>./x86info.error
   exectest lscpu    && lscpu > ./lscpu
+  exectest lscpu    && lscpu -e > ./lscpu_extended
 
   # EFI
   exectest efibootmgr && efibootmgr -v > efibootmgr

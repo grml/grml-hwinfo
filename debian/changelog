@@ -1,3 +1,14 @@
+grml-hwinfo (0.15.3) unstable; urgency=medium
+
+  * [f17f4a0] Store output of `lscpu -e` in file `lscpu_extended`
+  * [a160437] Bump Standards-Version to 4.4.1
+  * [ad6d7c7] Bump Standards-Version to 4.5.0
+  * [27ef3ad] Bump Debian compat version to 12, using debhelper-compat
+    approach
+  * [1987fec] Execute 'wrap-and-sort -a -t -s' on debian/
+
+ -- Michael Prokop <mika@grml.org>  Tue, 12 May 2020 16:25:47 +0200
+
 grml-hwinfo (0.15.2) unstable; urgency=medium
 
   * [c8495ee] Store cpuid output in file `cpuid`, add cpuid to Recommends

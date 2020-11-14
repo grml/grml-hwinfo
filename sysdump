@@ -62,17 +62,30 @@ sub dump_value($$)
 	my $level = shift;
 	my $file = shift;
 
-	if ($file =~ "/sys/kernel/debug/.*") {
-		print("ignoring file $file\n");
-		return 0;
-	}
-	if ($file =~ "/sys/kernel/security/apparmor/revision") {
-		print("ignoring file $file\n");
+	if (!open (FILE, "<$file")) {
+		print STDERR "can't open $file: '$!'\n";
 		return 0;
 	}
 
-	if (!open (FILE, "<$file")) {
-		print STDERR "can't open $file: '$!'\n";
+	print $file;
+
+	if ($file =~ "/sys/kernel/debug/.*") {
+		print(": ignoring file\n");
+		return 0;
+	}
+
+	if ($file =~ ".*_pipe.*") {
+		print(": ignoring file\n");
+		return 0;
+	}
+
+	if ($file =~ "/sys/kernel/tracing/per_cpu/cpu[0-9]+/snapshot_raw") {
+		print(": ignoring file\n");
+		return 0;
+	}
+
+	if ($file =~ "/sys/kernel/security/apparmor/revision") {
+		print(": ignoring file\n");
 		return 0;
 	}
 
@@ -85,7 +98,7 @@ sub dump_value($$)
 	close FILE;
 
 	#print " "x$level;
-	print $file, " = '", $value, "'\n";
+	print " = '", $value, "'\n";
 }
 
 sub dump_entry($$)

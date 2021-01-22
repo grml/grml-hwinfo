@@ -1,3 +1,10 @@
+grml-hwinfo (0.15.4) unstable; urgency=medium
+
+  * [8a97e68] Store `ip netconf` output in file `ip_netconf` Thanks to
+    Christian Hofstaedtler
+
+ -- Michael Prokop <mika@grml.org>  Fri, 22 Jan 2021 12:11:50 +0100
+
 grml-hwinfo (0.15.3) unstable; urgency=medium
 
   * [f17f4a0] Store output of `lscpu -e` in file `lscpu_extended`

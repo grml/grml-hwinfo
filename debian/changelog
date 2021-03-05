@@ -1,3 +1,14 @@
+grml-hwinfo (0.16.0) unstable; urgency=medium
+
+  * [3d53667] sysdump: rework ignore list code and ignore further files.
+    Thanks to Darshaka Patirana for tracking down the
+    /sys/kernel/tracing/* issue
+  * [9193fd5] Provide information to user if sysdump might be hanging
+  * [42ab70c] Log 'ip route show table' errors to corresponding error file
+  * [1807566] Log efibootmgr errors to efibootmgr.error
+
+ -- Michael Prokop <mika@grml.org>  Fri, 05 Mar 2021 17:40:46 +0100
+
 grml-hwinfo (0.15.4) unstable; urgency=medium
 
   * [8a97e68] Store `ip netconf` output in file `ip_netconf` Thanks to

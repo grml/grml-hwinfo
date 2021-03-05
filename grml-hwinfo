@@ -214,7 +214,16 @@ cd "${OUTDIR}" || exit 1
     mdstat meminfo modules mtrr pci uptime version ; do
     [ -r /proc/$i ] && cat /proc/$i > proc_$i
   done
+
+  if ! $_opt_quiet ; then
+    echo "Starting sysdump..."
+    echo "  NOTE: if it seems to be hanging at this stage file a bug report with output of:"
+    echo "        lsof -p \$(pgrep -f "\$\(which sysdump\)")"
+  fi
   exectest sysdump  && sysdump > ./sysdump 2>./sysdump.error
+  if ! $_opt_quiet ; then
+    echo "Execution of sysdump finished."
+  fi
 
   exectest cpuid && cpuid > ./cpuid 2>./cpuid.error
 

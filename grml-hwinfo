@@ -261,7 +261,7 @@ cd "${OUTDIR}" || exit 1
   exectest ip && ip route show     > ip_route
   exectest ip && if [ -r /etc/iproute2/rt_tables ] ; then
                    grep -v '^#' /etc/iproute2/rt_tables | while read table _ ; do
-                     ip route show table "${table}" > "ip_route_table_${table}"
+                     ip route show table "${table}" > "ip_route_table_${table}" 2> "ip_route_table_${table}".error
                    done
                  fi
   exectest ip && ip rule show      > ip_rule

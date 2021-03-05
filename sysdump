@@ -8,12 +8,12 @@
 #    it under the terms of the GNU General Public License as published by
 #    the Free Software Foundation; either version 2 of the License, or
 #    (at your option) any later version.
-# 
+#
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
-# 
+#
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -62,13 +62,45 @@ sub dump_value($$)
 	my $level = shift;
 	my $file = shift;
 
-	if ($file =~ "/sys/kernel/debug/.*") {
-		print("ignoring file $file\n");
-		return 0;
-	}
-	if ($file =~ "/sys/kernel/security/apparmor/revision") {
-		print("ignoring file $file\n");
-		return 0;
+	# ignore list: files that we can't read or are known to cause problems
+	SWITCH: for ($file) {
+		(
+			/.*\/bind$/ ||
+			/.*\/clear$/ ||
+			/.*\/delete$/ ||
+			/.*\/delete_device$/ ||
+			/.*\/drivers_probe$/ ||
+			/.*\/host_reset$/ ||
+			/.*\/new_device$/ ||
+			/.*\/new_id$/ ||
+			/.*\/reconfig$/ ||
+			/.*\/remove$/ ||
+			/.*\/remove_id$/ ||
+			/.*\/rescan$/ ||
+			/.*\/reset$/ ||
+			/.*\/scan$/ ||
+			/\/sys\/class\/gpio\/export$/ ||
+			/\/sys\/class\/gpio\/unexport$/ ||
+			/\/sys\/devices\/platform\/i8042\/serio[0-9]+\/drvctl$/ ||
+			/\/sys\/devices\/system\/clockevents\/clockevent[0-9]+\/unbind_device$/ ||
+			/\/sys\/devices\/system\/clocksource\/clocksource[0-9]+\/unbind_clocksource$/ ||
+			/\/sys\/devices\/system\/memory\/hard_offline_page$/ ||
+			/\/sys\/devices\/system\/memory\/soft_offline_page$/ ||
+			/\/sys\/devices\/system\/node\/node[0-9]\/compact$/ ||
+			/\/sys\/devices\/virtual\/graphics\/fbcon\/rotate_all$/ ||
+			/\/sys\/firmware\/efi\/vars\/del_var$/ ||
+			/\/sys\/firmware\/efi\/vars\/new_var$/ ||
+			/\/sys\/kernel\/debug\/.*/ ||
+			/\/sys\/kernel\/security\/apparmor\/revision$/ ||
+			/\/sys\/kernel\/tracing\/per_cpu\/cpu[0-9]+\/snapshot_raw$/ ||
+			/\/sys\/kernel\/tracing\/per_cpu\/cpu[0-9]+\/trace_pipe.*/ ||
+			/\/sys\/kernel\/tracing\/trace_pipe/ ||
+			/\/sys\/module\/md_mod\/parameters\/new_array$/ ||
+			/.*\/unbind$/
+		) && do {
+			print "ignoring file $file\n";
+			return 0;
+		}
 	}
 
 	if (!open (FILE, "<$file")) {

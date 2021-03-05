@@ -241,7 +241,7 @@ cd "${OUTDIR}" || exit 1
   exectest lscpu    && lscpu -e > ./lscpu_extended
 
   # EFI
-  exectest efibootmgr && efibootmgr -v > efibootmgr
+  exectest efibootmgr && efibootmgr -v >efibootmgr 2>efibootmgr.error
 
   # net stuff, net-tools:
   exectest ifconfig && ifconfig -v -a > ./ifconfig

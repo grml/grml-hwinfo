@@ -329,7 +329,7 @@ cd "${OUTDIR}" || exit 1
   else
     echo "running as root" > root
     disk_info
-    exectest sfdisk     && sfdisk -d > ./sfdisk 2>./sfdisk.error
+
     exectest dmidecode  && dmidecode > ./dmidecode
 
     exectest dconf && dconf -o dconf
@@ -394,6 +394,10 @@ cd "${OUTDIR}" || exit 1
     fi
 
     for disk in $disklist; do
+      if exectest sfdisk && [[ -b "/dev/${disk}" ]] ; then
+        sfdisk -d "/dev/${disk}" > "./sfdisk_${disk}" 2>"./sfdisk_${disk}.error"
+      fi
+
       if exectest smartctl ; then
         echo -e "smartctl -a /dev/${disk}:\n" >> smartctl
         smartctl -a "/dev/$disk" >> ./smartctl

@@ -1,3 +1,10 @@
+grml-hwinfo (0.16.1) unstable; urgency=medium
+
+  * [e98e5ca] Iterate over present disks to collect "sfdisk -d"
+    information
+
+ -- Michael Prokop <mika@grml.org>  Mon, 21 Mar 2022 16:17:09 +0100
+
 grml-hwinfo (0.16.0) unstable; urgency=medium
 
   * [3d53667] sysdump: rework ignore list code and ignore further files.

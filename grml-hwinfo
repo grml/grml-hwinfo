@@ -332,8 +332,6 @@ cd "${OUTDIR}" || exit 1
 
     exectest dmidecode  && dmidecode > ./dmidecode
 
-    exectest dconf && dconf -o dconf
-
     if exectest mcelog ; then
       mcelog --dmi > mcelog_dmi 2>mcelog_dmi.error
     fi

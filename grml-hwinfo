@@ -160,6 +160,17 @@ disk_info() {
   disklist=$(lsblk -nd -o NAME -e 7,11)
 }
 
+# return list of all network devices in array "${niclist[@]}"
+get_network_devices() {
+  local interface
+  niclist=()
+  for interface in /sys/class/net/* ; do
+      [ -e "${interface}" ] || continue
+      interface=$(basename "${interface}")
+      # [ "${interface}" = "lo" ] && continue
+      niclist+=("${interface}")
+  done
+}
 
 cd "${OUTDIR}" || exit 1
 (
@@ -235,6 +246,23 @@ cd "${OUTDIR}" || exit 1
   # net stuff, net-tools:
   exectest ifconfig && ifconfig -v -a > ./ifconfig
   exectest route    && route -n       > ./route
+
+  # net stuff, ethtool
+  if exectest ethtool ; then
+    get_network_devices
+    for dev in "${niclist[@]}" ; do
+      ethtool          "${dev}" > ethtool_"${dev}"
+      case "${dev}" in
+        "lo")
+          # skip the loopback device, `ethtool --driver lo` fails with:
+          # "Cannot get driver information: Operation not supported"
+          ;;
+        *)
+          ethtool --driver "${dev}" > ethtool_"${dev}_driver"
+          ;;
+      esac
+    done
+  fi
 
   # net stuff, iproute:
   exectest ip && ip addrlabel list > ip_addrlabel

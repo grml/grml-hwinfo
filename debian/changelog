@@ -1,3 +1,15 @@
+grml-hwinfo (0.17.0) unstable; urgency=medium
+
+  [ Michael Prokop ]
+  * [6487a61] Drop dconf support (tool no longer maintained/available)
+    Thanks to Christopher Bock
+  * [79336ef] Collect information about network devices via ethtool
+
+  [ Darshaka Pathirana ]
+  * [6146f5a] Reimplement disk_info() function
+
+ -- Michael Prokop <mika@grml.org>  Fri, 08 Sep 2023 13:13:09 +0200
+
 grml-hwinfo (0.16.1) unstable; urgency=medium
 
   * [e98e5ca] Iterate over present disks to collect "sfdisk -d"

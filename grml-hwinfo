@@ -172,6 +172,22 @@ get_network_devices() {
   done
 }
 
+# Check if X server is running
+#
+# If xset is missing, we rely on the existence of the $DISPLAY variable.
+NO_DISPLAY=0
+if exectest xset ; then
+  if ! timeout 1s xset q &>/dev/null ; then
+    NO_DISPLAY=1
+  fi
+elif [ -z "${DISPLAY}" ] ; then
+    NO_DISPLAY=1
+fi
+
+if [ "${NO_DISPLAY}" -eq 1 ] ; then
+  $_opt_quiet || echo "W: Running without X server. Not all data will be collected."
+fi
+
 cd "${OUTDIR}" || exit 1
 (
   if ! $_opt_quiet ; then
@@ -324,7 +340,7 @@ cd "${OUTDIR}" || exit 1
   dpkg -S "/boot/vmlinuz-$(uname -r)" >> running_kernel 2>>running_kernel.error
 
   # X stuff
-  if [ -n "${DISPLAY}" ] ; then
+  if [ "${NO_DISPLAY}" -eq 0 ] ; then
     exectest xviddetect  && xviddetect         > ./xviddetect
     exectest xvidtune    && xvidtune -show     > ./xdivtune
     exectest xrandr      && xrandr             > ./xrandr

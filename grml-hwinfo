@@ -191,6 +191,10 @@ cd "${OUTDIR}" || exit 1
   fi
   uname -a > ./uname
 
+  # inxi
+  exectest inxi  && inxi -F -xx > ./inxi 2>./inxi.error
+  exectest inxi  && inxi -FJ --admin > ./inxi_admin 2>./inxi_admin.error
+
   # disks / devices
   [ -f /proc/scsi/scsi ] && cat /proc/scsi/scsi > scsi
   exectest lspci && lspci -nn > ./lspci

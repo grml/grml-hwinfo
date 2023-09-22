@@ -1,3 +1,12 @@
+grml-hwinfo (0.17.1) unstable; urgency=medium
+
+  [ Darshaka Pathirana ]
+  * [67431af] grml-hwinfo: Add inxi output
+  * [6356449] grml-hwinfo: Warn the user if grml-hwinfo is running
+    without X server
+
+ -- Michael Prokop <mika@grml.org>  Fri, 22 Sep 2023 18:42:30 +0200
+
 grml-hwinfo (0.17.0) unstable; urgency=medium
 
   [ Michael Prokop ]

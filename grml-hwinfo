@@ -156,8 +156,11 @@ exectest() {
 }
 
 disk_info() {
-  # the variable holds a newline separated list of disk block devices, excluding loopback and CD-ROM devices
-  disklist=$(lsblk -nd -o NAME -e 7,11)
+  # the variable holds a newline separated list of disk block devices,
+  # excluding loopback, CD-ROM, zram and zvol(zfs) devices
+  # https://www.kernel.org/doc/Documentation/admin-guide/devices.txt
+  disklist=$(lsblk -nd -o NAME \
+    -e "$(awk '/(zram|zvol)/ {printf "%s,",$1}' /proc/devices)"7,11)
 }
 
 # return list of all network devices in array "${niclist[@]}"

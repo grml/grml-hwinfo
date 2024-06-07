@@ -459,8 +459,10 @@ cd "${OUTDIR}" || exit 1
 
       if exectest sdparm ; then
         echo -e "sdparm --all --long /dev/${disk}:\n" >> sdparm
-        sdparm --all --long "/dev/$disk" >> ./sdparm
+        echo -e "stderr for sdparm --all --long /dev/${disk}:\n" >> sdparm.error
+        sdparm --all --long "/dev/$disk" >> ./sdparm 2>> ./sdparm.error
         echo -e "\n\n" >> sdparm
+        echo -e "\n\n" >> sdparm.error
       fi
 
       if exectest sg_inq ; then

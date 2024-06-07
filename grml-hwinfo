@@ -233,6 +233,14 @@ cd "${OUTDIR}" || exit 1
     fi
   fi
 
+  if exectest losetup ; then
+    losetup -a > ./losetup 2>./losetup.error
+    # json output is supported since util-linux v2.29.2:
+    if losetup --help | grep -q 'json' ; then
+      losetup --json > ./json/losetup 2>./json/losetup.error
+    fi
+  fi
+
   if exectest lsusb ; then
     lsusb    > ./lsusb
     lsusb -v > ./lsusb_verbose 2>./lsusb_verbose.error

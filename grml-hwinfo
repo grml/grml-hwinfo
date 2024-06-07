@@ -462,6 +462,10 @@ cd "${OUTDIR}" || exit 1
     for disk in $disklist; do
       if exectest sfdisk && [[ -b "/dev/${disk}" ]] ; then
         sfdisk -d "/dev/${disk}" > "./sfdisk_${disk}" 2>"./sfdisk_${disk}.error"
+        # json output is supported since util-linux v2.29.2:
+        if sfdisk --help | grep -q 'json' ; then
+          sfdisk -d "/dev/${disk}" --json > ./json/sfdisk_"${disk}" 2>./json/sfdisk_"${disk}".error
+        fi
       fi
 
       if exectest smartctl ; then

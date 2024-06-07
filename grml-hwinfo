@@ -225,6 +225,14 @@ cd "${OUTDIR}" || exit 1
     exectest $i && $i > ./$i
   done
 
+  if exectest findmnt ; then
+    findmnt > ./findmnt 2>./findmnt.error
+    # json output is supported since util-linux v2.29.2:
+    if findmnt --help | grep -q 'json' ; then
+      findmnt --json > ./json/findmnt 2>./json/findmnt.error
+    fi
+  fi
+
   if exectest lsusb ; then
     lsusb    > ./lsusb
     lsusb -v > ./lsusb_verbose 2>./lsusb_verbose.error

@@ -197,6 +197,9 @@ cd "${OUTDIR}" || exit 1
     echo "This might take a few seconds/minutes. Please be patient..."
   fi
 
+  # prepare sub directory for json files
+  mkdir -p json
+
   # some sysinfo
   date > ./date
   if [ -r /etc/grml_version ] ; then
@@ -257,8 +260,14 @@ cd "${OUTDIR}" || exit 1
   exectest hwinfo   && hwinfo log=hwinfo
   exectest numactl  && numactl --hardware > ./numactl
   exectest x86info  && x86info > ./x86info 2>./x86info.error
-  exectest lscpu    && lscpu > ./lscpu
-  exectest lscpu    && lscpu -e > ./lscpu_extended
+  if exectest lscpu ; then
+    lscpu > ./lscpu
+    lscpu -e > ./lscpu_extended
+    # json output is supported since util-linux v2.33.1:
+    if lscpu --help | grep -q 'json' ; then
+      lscpu --json > ./json/lscpu
+    fi
+  fi
 
   # EFI
   exectest efibootmgr && efibootmgr -v >efibootmgr 2>efibootmgr.error
@@ -411,7 +420,13 @@ cd "${OUTDIR}" || exit 1
 
     exectest dmsetup && dmsetup ls > dmsetup_ls 2>dmsetup_ls.error
     exectest dmsetup && dmsetup ls --tree > dmsetup_ls_tree 2>dmsetup_ls_tree.error
-    exectest lsblk && lsblk > ./lsblk 2>./lsblk.error
+    if exectest lsblk ; then
+      lsblk > ./lsblk 2>./lsblk.error
+      # json output is supported since util-linux v2.33.1:
+      if lsblk --help | grep -q 'json' ; then
+        lsblk --json > ./json/lsblk 2>./json/lsblk.error
+      fi
+    fi
 
     # iSCSI
     if exectest iscsiadm ; then

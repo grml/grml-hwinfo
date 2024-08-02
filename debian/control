@@ -36,6 +36,7 @@ Recommends:
  mokutil,
  net-tools,
  numactl,
+ nvme-cli,
  open-iscsi,
  parted,
  powermgmt-base,

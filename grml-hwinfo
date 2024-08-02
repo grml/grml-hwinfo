@@ -172,6 +172,51 @@ get_network_devices() {
   done
 }
 
+nvme_info() {
+  if ! exectest nvme ; then
+    return 0
+  fi
+
+  # `nvme list` returns with `Failed to scan topology` and exit code 1,
+  # if there's no NVMe device present. There's no point in running any
+  # further commands then, so let's avoid collecting empty files and
+  # error messages
+  if ! nvme list &>/dev/null ; then
+    return 0
+  fi
+
+  # list
+  nvme list > ./nvme_list 2>./nvme_list.error
+  nvme list --output-format=json > ./json/nvme_list
+
+  # list-subsys
+  nvme list-subsys > ./nvme_list-subsys 2>./nvme_list-subsys.error
+  nvme list-subsys --output-format=json > ./json/nvme_list-subsys
+
+  # get list of available disks
+  mapfile -t nvme_disks < <(lsblk -nd -o NAME -e 7,11 | sed -n 's/^nvme/\/dev\/&/p')
+
+  for disk in "${nvme_disks[@]}" ; do
+    disk_name="${disk##*/}" # /dev/nvme0n1 -> nvme0n1
+
+    # smart-log
+    nvme smart-log "$disk" > ./nvme_smart-log_"${disk_name}"
+    nvme smart-log --output-format=json "$disk" > ./json/nvme_smart-log_"${disk_name}"
+
+    # fw-log
+    nvme fw-log "$disk" > ./nvme_fw-log_"${disk_name}"
+    nvme fw-log --output-format=json "$disk" > ./json/./nvme_fw-log_"${disk_name}"
+
+    # error-log
+    nvme error-log "$disk" > ./nvme_error-log_"${disk_name}"
+    nvme error-log --output-format=json "$disk" > ./json/./nvme_error-log_"${disk_name}"
+
+    # effects-log
+    nvme effects-log "$disk" > ./nvme_effects-log_"${disk_name}"
+    nvme effects-log --output-format=json "$disk" > ./json/./nvme_effects-log_"${disk_name}"
+  done
+}
+
 # Check if X server is running
 #
 # If xset is missing, we rely on the existence of the $DISPLAY variable.
@@ -458,6 +503,9 @@ cd "${OUTDIR}" || exit 1
       lsscsi    > ./lsscsi 2>./lsscsi.error
       lsscsi -t > ./lsscsi_transport 2>./lsscsi_transport.error
     fi
+
+    # NVMe
+    nvme_info
 
     for disk in $disklist; do
       if exectest sfdisk && [[ -b "/dev/${disk}" ]] ; then

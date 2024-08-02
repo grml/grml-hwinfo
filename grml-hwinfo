@@ -536,7 +536,7 @@ cd "${OUTDIR}" || exit 1
 
       if exectest parted ; then
         echo -e "parted -s /dev/${disk}:\n" >> parted
-        parted -s "/dev/$disk" print >> ./parted
+        parted -s "/dev/$disk" print >> ./parted 2>> ./parted.error
         echo -e "\n\n" >> parted
       fi
 

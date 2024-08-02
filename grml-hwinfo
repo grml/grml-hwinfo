@@ -261,8 +261,8 @@ cd "${OUTDIR}" || exit 1
 
   # disks / devices
   [ -f /proc/scsi/scsi ] && cat /proc/scsi/scsi > scsi
-  exectest lspci && lspci -nn > ./lspci
-  exectest lspci && lspci -vvnn > ./lspci_verbose
+  exectest lspci && lspci -nn >./lspci 2>./lspci.error
+  exectest lspci && lspci -vvnn >./lspci_verbose 2>./lspci_verbose.error
   cat /proc/partitions > partitions
   find /proc/ide/ -name geometry -exec grep . {} \; > proc_ide 2>/dev/null
   df -h > ./df 2>/dev/null

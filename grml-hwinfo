@@ -494,14 +494,15 @@ cd "${OUTDIR}" || exit 1
         if ! $_opt_quiet ; then
           echo "Reading ZFS data... this might take a while."
         fi
+        mkdir -p ./zfs
         for pool in $(zpool list -H -o name); do
-          zdb -Dbsd "$pool" > ./zdb."$pool" 2> ./zdb."$pool"
-          zpool list -vPpo all "$pool" > ./zpool-list."$pool" 2> ./zpool-list."$pool".error
-          zpool status -vtiP "$pool" > ./zpool-status."$pool" 2> ./zpool-status."$pool".error
-          zpool iostat -r "$pool" > ./zpool-iostat."$pool" 2> ./zpool-iostat."$pool".error
-          zfs list -o all -p -r "$pool" > ./zfs-list."$pool" 2> ./zfs-list."$pool".error
+          zpool list -vPpo all "$pool" > ./zfs/zpool-list."$pool" 2> ./zfs/zpool-list."$pool".error &
+          zpool status -vtiP "$pool" > ./zfs/zpool-status."$pool" 2> ./zfs/zpool-status."$pool".error &
+          zpool iostat -r "$pool" > ./zfs/zpool-iostat."$pool" 2> ./zfs/zpool-iostat."$pool".error &
+          zfs list -o all -t filesystem,volume -p -r "$pool" > ./zfs/zfs-list."$pool" 2> ./zfs/zfs-list."$pool".error &
         done
-        arc_summary --raw --alternate > ./arc_summary 2> ./arc_summary.error
+        arc_summary --raw --alternate > ./zfs/arc_summary 2> ./zfs/arc_summary.error &
+        wait
         if ! $_opt_quiet ; then
           echo "Finished reading ZFS data."
         fi

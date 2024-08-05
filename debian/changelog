@@ -1,3 +1,21 @@
+grml-hwinfo (0.18.0) unstable; urgency=medium
+
+  * [5f91136] Log stderr of sdparm to file sdparm.error
+  * [f129f21] Collect json output of lscpu + lsblk in "json" sub-directory
+  * [77fbbb5] Collect output of findmnt in "findmnt" and its json version
+    in "json/findmnt"
+  * [b4e7d9b] Collect output of losetup -a in file "losetup" and its json
+    version in "json/losetup"
+  * [52436a1] Collect JSON output of sfdisk in ./json/sfdisk_*
+  * [6bfd6dd] Retrieve generic information about NVMe disks
+  * [8293591] Redirect stderr of parted to file parted.error
+  * [bbfd3b1] Redirect stderr of lspci invocations to separate files.
+    Thanks to Darshaka Pathirana for the bug report
+  * [2801c01] Reduce execution time by ~60% by dropping dpkg call to get
+    kernel information
+
+ -- Michael Prokop <mika@grml.org>  Mon, 05 Aug 2024 14:04:33 +0200
+
 grml-hwinfo (0.17.1) unstable; urgency=medium
 
   [ Darshaka Pathirana ]

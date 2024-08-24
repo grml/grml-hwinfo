@@ -496,10 +496,14 @@ cd "${OUTDIR}" || exit 1
         fi
         mkdir -p ./zfs
         for pool in $(zpool list -H -o name); do
-          zpool list -vPpo all "$pool" > ./zfs/zpool-list."$pool" 2> ./zfs/zpool-list."$pool".error &
-          zpool status -vtiP "$pool" > ./zfs/zpool-status."$pool" 2> ./zfs/zpool-status."$pool".error &
-          zpool iostat -r "$pool" > ./zfs/zpool-iostat."$pool" 2> ./zfs/zpool-iostat."$pool".error &
-          zfs list -o all -t filesystem,volume -p -r "$pool" > ./zfs/zfs-list."$pool" 2> ./zfs/zfs-list."$pool".error &
+          # for a quick overview
+          zpool list -vPL "$pool" > ./zfs/"$pool".list 2> ./zfs/"$pool".list.error &
+          zpool status -vtiP "$pool" > ./zfs/"$pool".status 2> ./zfs/"$pool".status.error &
+          zpool iostat -rp "$pool" > ./zfs/"$pool".histogram 2> ./zfs/"$pool".histogram.error &
+          zfs list -o space,referenced,logicalreferenced,quota,refquota -t filesystem,volume -r "$pool" > ./zfs/"$pool".zfslist 2> ./zfs/"$pool".zfslist.error &
+          # machine parsable data
+          zpool get -Hp all "$pool" > ./zfs/"$pool".props 2> ./zfs/"$pool".props.error &
+          zfs get -Hp all "$pool" > ./zfs/"$pool".zfsprops 2> ./zfs/"$pool".zfsprops.error &
         done
         arc_summary --raw --alternate > ./zfs/arc_summary 2> ./zfs/arc_summary.error &
         wait

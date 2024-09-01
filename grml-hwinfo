@@ -481,7 +481,7 @@ cd "${OUTDIR}" || exit 1
     exectest dmsetup && dmsetup ls > dmsetup_ls 2>dmsetup_ls.error
     exectest dmsetup && dmsetup ls --tree > dmsetup_ls_tree 2>dmsetup_ls_tree.error
     if exectest lsblk ; then
-      lsblk > ./lsblk 2>./lsblk.error
+      lsblk -o +LABEL,PARTLABEL,UUID,FSTYPE,SERIAL > ./lsblk 2>./lsblk.error
       # json output is supported since util-linux v2.33.1:
       if lsblk --help | grep -q 'json' ; then
         lsblk --json > ./json/lsblk 2>./json/lsblk.error

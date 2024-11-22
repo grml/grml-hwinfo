@@ -492,6 +492,31 @@ cd "${OUTDIR}" || exit 1
       fi
     fi
 
+    # ZFS
+    if exectest zpool; then
+      if [ -n "$(zpool list -H -o name)" ]; then
+        if ! $_opt_quiet ; then
+          echo "Reading ZFS data... this might take a while."
+        fi
+        mkdir -p ./zfs
+        for pool in $(zpool list -H -o name); do
+          # for a quick overview
+          zpool list -vPL "$pool" > ./zfs/"$pool".list 2> ./zfs/"$pool".list.error &
+          zpool status -vtiP "$pool" > ./zfs/"$pool".status 2> ./zfs/"$pool".status.error &
+          zpool iostat -rp "$pool" > ./zfs/"$pool".histogram 2> ./zfs/"$pool".histogram.error &
+          zfs list -o space,referenced,logicalreferenced,quota,refquota -t filesystem,volume -r "$pool" > ./zfs/"$pool".zfslist 2> ./zfs/"$pool".zfslist.error &
+          # machine parsable data
+          zpool get -Hp all "$pool" > ./zfs/"$pool".props 2> ./zfs/"$pool".props.error &
+          zfs get -Hp all "$pool" > ./zfs/"$pool".zfsprops 2> ./zfs/"$pool".zfsprops.error &
+        done
+        arc_summary --raw --alternate > ./zfs/arc_summary 2> ./zfs/arc_summary.error &
+        wait
+        if ! $_opt_quiet ; then
+          echo "Finished reading ZFS data."
+        fi
+      fi
+    fi
+
     # iSCSI
     if exectest iscsiadm ; then
       iscsiadm -m session > iscsiadm_session 2>iscsiadm_session.error

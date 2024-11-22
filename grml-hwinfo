@@ -256,8 +256,12 @@ cd "${OUTDIR}" || exit 1
   uname -a > ./uname
 
   # inxi
-  exectest inxi  && inxi -F -xx > ./inxi 2>./inxi.error
-  exectest inxi  && inxi -FJ --admin > ./inxi_admin 2>./inxi_admin.error
+  exectest inxi  && inxi -FJm > ./inxi_standard 2>./inxi_standard.error
+  exectest inxi  && inxi -FJmz > ./inxi_standard_filter 2>./inxi_standard_filter.error
+  exectest inxi  && inxi -FJm -xx > ./inxi_extra 2>./inxi_extra.error
+  exectest inxi  && inxi -FJmz -xx > ./inxi_extra_filter 2>./inxi_extra_filter.error
+  exectest inxi  && inxi -FJm --admin > ./inxi_admin 2>./inxi_admin.error
+  exectest inxi  && inxi -FJmz --admin > ./inxi_admin_filter 2>./inxi_admin_filter.error
 
   # disks / devices
   [ -f /proc/scsi/scsi ] && cat /proc/scsi/scsi > scsi

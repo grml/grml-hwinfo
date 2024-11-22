@@ -484,7 +484,7 @@ cd "${OUTDIR}" || exit 1
       lsblk -o +LABEL,PARTLABEL,UUID,FSTYPE,SERIAL > ./lsblk 2>./lsblk.error
       # json output is supported since util-linux v2.33.1:
       if lsblk --help | grep -q 'json' ; then
-        lsblk --json > ./json/lsblk 2>./json/lsblk.error
+        lsblk -o +LABEL,PARTLABEL,UUID,FSTYPE,SERIAL --json > ./json/lsblk 2>./json/lsblk.error
       fi
     fi
 

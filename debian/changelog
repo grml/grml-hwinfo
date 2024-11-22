@@ -1,3 +1,14 @@
+grml-hwinfo (0.18.1) unstable; urgency=medium
+
+  [ Chris Hofstaedtler ]
+  * [6c82d30] debian: update Vcs-Git and Vcs-Browser
+
+  [ Michael Prokop ]
+  * [0ec89ca] Ship debian/gbp.conf for gbp usage
+  * [6415471] debian: Bump Standards-Version to 4.7.0
+
+ -- Michael Prokop <mika@grml.org>  Fri, 22 Nov 2024 13:28:13 +0100
+
 grml-hwinfo (0.18.0) unstable; urgency=medium
 
   * [5f91136] Log stderr of sdparm to file sdparm.error

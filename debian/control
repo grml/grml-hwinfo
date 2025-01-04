@@ -31,7 +31,6 @@ Recommends:
  laptop-detect,
  lsscsi,
  lvm2,
- mcelog,
  mdadm,
  mokutil,
  net-tools,

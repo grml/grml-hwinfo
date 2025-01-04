@@ -398,10 +398,6 @@ cd "${OUTDIR}" || exit 1
   fi
   [ -r /proc/apm/ ] && apm > ./apm
 
-  if exectest mcelog ; then
-    mcelog > ./mcelog 2>./mcelog.error
-  fi
-
   # kernel stuff
   if [ -r /proc/config.gz ] ; then
     zcat /proc/config.gz > kernelconfig
@@ -441,10 +437,6 @@ cd "${OUTDIR}" || exit 1
     disk_info
 
     exectest dmidecode  && dmidecode > ./dmidecode
-
-    if exectest mcelog ; then
-      mcelog --dmi > mcelog_dmi 2>mcelog_dmi.error
-    fi
 
     if exectest edac-util ; then
       edac-util > ./edac-util 2>./edac-util.error

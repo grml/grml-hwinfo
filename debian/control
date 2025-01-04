@@ -46,7 +46,6 @@ Recommends:
  x11-utils,
  x11-xserver-utils,
  x86info,
- xresprobe,
 Description: collect hardware information
  This tool collects information of the hardware this tool is
  being executed on. It can be executed as normal user to collect

@@ -1,3 +1,11 @@
+grml-hwinfo (0.18.3) unstable; urgency=medium
+
+  * [ecfa811] Remove mcelog invocations
+  * [c5dceab] Remove xresprobe from Recommends:
+  * [c8aaa32] Remove dconf from Recommends:
+
+ -- Chris Hofstaedtler <ch@grml.org>  Mon, 06 Jan 2025 00:21:09 +0100
+
 grml-hwinfo (0.18.2) unstable; urgency=medium
 
   [ Christopher Bock ]

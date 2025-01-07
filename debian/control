@@ -3,20 +3,22 @@ Section: admin
 Priority: optional
 Maintainer: Michael Prokop <mika@grml.org>
 Build-Depends:
- debhelper-compat (= 12),
+ debhelper-compat (= 13),
 Standards-Version: 4.7.0
 Homepage: https://github.com/grml/grml-hwinfo
 Vcs-Git: https://github.com/grml/grml-hwinfo.git
 Vcs-Browser: https://github.com/grml/grml-hwinfo
 Origin: Grml
 Bugs: mailto:bugs@grml.org
+Rules-Requires-Root: no
 
 Package: grml-hwinfo
 Architecture: all
 Depends:
  sysfsutils,
  ${misc:Depends},
-Recommends:
+ ${perl:Depends},
+Suggests:
  acpi,
  acpica-tools,
  cpuid,

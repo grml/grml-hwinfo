@@ -1,3 +1,13 @@
+grml-hwinfo (0.18.4) unstable; urgency=medium
+
+  * [44df65d] Use dh sequencer to build
+  * [390ccda] Downgrade all Recommends to Suggests
+  * [94a394c] Update debian/copyright
+  * [9bf4246] d/control: set X-Style: black
+  * [f69c250] Prepare packaging for Debian main
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Tue, 07 Jan 2025 18:31:50 +0100
+
 grml-hwinfo (0.18.3) unstable; urgency=medium
 
   * [ecfa811] Remove mcelog invocations

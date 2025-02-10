@@ -1,3 +1,9 @@
+grml-hwinfo (0.18.5) unstable; urgency=medium
+
+  * Source-only upload for Debian main.
+
+ -- Chris Hofstaedtler <ch@grml.org>  Mon, 10 Feb 2025 14:48:39 +0100
+
 grml-hwinfo (0.18.4) unstable; urgency=medium
 
   * [44df65d] Use dh sequencer to build

@@ -1,3 +1,9 @@
+grml-hwinfo (0.18.6) unstable; urgency=medium
+
+  * [686c0b5] Add minimal GitHub Actions build workflow
+
+ -- Chris Hofstaedtler <ch@grml.org>  Tue, 04 Mar 2025 23:40:23 +0100
+
 grml-hwinfo (0.18.5) unstable; urgency=medium
 
   * Source-only upload for Debian main.

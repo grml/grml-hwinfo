@@ -30,7 +30,7 @@ Suggests:
  hdparm,
  hwinfo,
  i2c-tools,
- iproute2 | iproute,
+ iproute2,
  laptop-detect,
  lsscsi,
  lvm2,

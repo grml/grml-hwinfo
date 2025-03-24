@@ -175,6 +175,51 @@ get_network_devices() {
   done
 }
 
+nvme_info() {
+  if ! exectest nvme ; then
+    return 0
+  fi
+
+  # `nvme list` returns with `Failed to scan topology` and exit code 1,
+  # if there's no NVMe device present. There's no point in running any
+  # further commands then, so let's avoid collecting empty files and
+  # error messages
+  if ! nvme list &>/dev/null ; then
+    return 0
+  fi
+
+  # list
+  nvme list > ./nvme_list 2>./nvme_list.error
+  nvme list --output-format=json > ./json/nvme_list
+
+  # list-subsys
+  nvme list-subsys > ./nvme_list-subsys 2>./nvme_list-subsys.error
+  nvme list-subsys --output-format=json > ./json/nvme_list-subsys
+
+  # get list of available disks
+  mapfile -t nvme_disks < <(lsblk -nd -o NAME -e 7,11 | sed -n 's/^nvme/\/dev\/&/p')
+
+  for disk in "${nvme_disks[@]}" ; do
+    disk_name="${disk##*/}" # /dev/nvme0n1 -> nvme0n1
+
+    # smart-log
+    nvme smart-log "$disk" > ./nvme_smart-log_"${disk_name}"
+    nvme smart-log --output-format=json "$disk" > ./json/nvme_smart-log_"${disk_name}"
+
+    # fw-log
+    nvme fw-log "$disk" > ./nvme_fw-log_"${disk_name}"
+    nvme fw-log --output-format=json "$disk" > ./json/./nvme_fw-log_"${disk_name}"
+
+    # error-log
+    nvme error-log "$disk" > ./nvme_error-log_"${disk_name}"
+    nvme error-log --output-format=json "$disk" > ./json/./nvme_error-log_"${disk_name}"
+
+    # effects-log
+    nvme effects-log "$disk" > ./nvme_effects-log_"${disk_name}"
+    nvme effects-log --output-format=json "$disk" > ./json/./nvme_effects-log_"${disk_name}"
+  done
+}
+
 # Check if X server is running
 #
 # If xset is missing, we rely on the existence of the $DISPLAY variable.
@@ -200,6 +245,9 @@ cd "${OUTDIR}" || exit 1
     echo "This might take a few seconds/minutes. Please be patient..."
   fi
 
+  # prepare sub directory for json files
+  mkdir -p json
+
   # some sysinfo
   date > ./date
   if [ -r /etc/grml_version ] ; then
@@ -211,19 +259,39 @@ cd "${OUTDIR}" || exit 1
   uname -a > ./uname
 
   # inxi
-  exectest inxi  && inxi -F -xx > ./inxi 2>./inxi.error
-  exectest inxi  && inxi -FJ --admin > ./inxi_admin 2>./inxi_admin.error
+  exectest inxi  && inxi -FJm > ./inxi_standard 2>./inxi_standard.error
+  exectest inxi  && inxi -FJmz > ./inxi_standard_filter 2>./inxi_standard_filter.error
+  exectest inxi  && inxi -FJm -xx > ./inxi_extra 2>./inxi_extra.error
+  exectest inxi  && inxi -FJmz -xx > ./inxi_extra_filter 2>./inxi_extra_filter.error
+  exectest inxi  && inxi -FJm --admin > ./inxi_admin 2>./inxi_admin.error
+  exectest inxi  && inxi -FJmz --admin > ./inxi_admin_filter 2>./inxi_admin_filter.error
 
   # disks / devices
   [ -f /proc/scsi/scsi ] && cat /proc/scsi/scsi > scsi
-  exectest lspci && lspci -nn > ./lspci
-  exectest lspci && lspci -vvnn > ./lspci_verbose
+  exectest lspci && lspci -nn >./lspci 2>./lspci.error
+  exectest lspci && lspci -vvnn >./lspci_verbose 2>./lspci_verbose.error
   cat /proc/partitions > partitions
   find /proc/ide/ -name geometry -exec grep . {} \; > proc_ide 2>/dev/null
   df -h > ./df 2>/dev/null
   for i in free lsmod mount lsdev lspnp ; do
     exectest $i && $i > ./$i
   done
+
+  if exectest findmnt ; then
+    findmnt > ./findmnt 2>./findmnt.error
+    # json output is supported since util-linux v2.29.2:
+    if findmnt --help | grep -q 'json' ; then
+      findmnt --json > ./json/findmnt 2>./json/findmnt.error
+    fi
+  fi
+
+  if exectest losetup ; then
+    losetup -a > ./losetup 2>./losetup.error
+    # json output is supported since util-linux v2.29.2:
+    if losetup --help | grep -q 'json' ; then
+      losetup --json > ./json/losetup 2>./json/losetup.error
+    fi
+  fi
 
   if exectest lsusb ; then
     lsusb    > ./lsusb
@@ -260,8 +328,14 @@ cd "${OUTDIR}" || exit 1
   exectest hwinfo   && hwinfo log=hwinfo
   exectest numactl  && numactl --hardware > ./numactl
   exectest x86info  && x86info > ./x86info 2>./x86info.error
-  exectest lscpu    && lscpu > ./lscpu
-  exectest lscpu    && lscpu -e > ./lscpu_extended
+  if exectest lscpu ; then
+    lscpu > ./lscpu
+    lscpu -e > ./lscpu_extended
+    # json output is supported since util-linux v2.33.1:
+    if lscpu --help | grep -q 'json' ; then
+      lscpu --json > ./json/lscpu
+    fi
+  fi
 
   # EFI
   exectest efibootmgr && efibootmgr -v >efibootmgr 2>efibootmgr.error
@@ -327,10 +401,6 @@ cd "${OUTDIR}" || exit 1
   fi
   [ -r /proc/apm/ ] && apm > ./apm
 
-  if exectest mcelog ; then
-    mcelog > ./mcelog 2>./mcelog.error
-  fi
-
   # kernel stuff
   if [ -r /proc/config.gz ] ; then
     zcat /proc/config.gz > kernelconfig
@@ -340,7 +410,6 @@ cd "${OUTDIR}" || exit 1
 
   exectest dpkg && COLUMNS=1000 dpkg -l "linux-image-${UNAME}" 2>running_kernel.error \
            | grep "linux-image-${UNAME}" | tr -s ' ' > running_kernel 2>>running_kernel.error
-  dpkg -S "/boot/vmlinuz-$(uname -r)" >> running_kernel 2>>running_kernel.error
 
   # X stuff
   if [ "${NO_DISPLAY}" -eq 0 ] ; then
@@ -371,10 +440,6 @@ cd "${OUTDIR}" || exit 1
     disk_info
 
     exectest dmidecode  && dmidecode > ./dmidecode
-
-    if exectest mcelog ; then
-      mcelog --dmi > mcelog_dmi 2>mcelog_dmi.error
-    fi
 
     if exectest edac-util ; then
       edac-util > ./edac-util 2>./edac-util.error
@@ -414,7 +479,38 @@ cd "${OUTDIR}" || exit 1
 
     exectest dmsetup && dmsetup ls > dmsetup_ls 2>dmsetup_ls.error
     exectest dmsetup && dmsetup ls --tree > dmsetup_ls_tree 2>dmsetup_ls_tree.error
-    exectest lsblk && lsblk > ./lsblk 2>./lsblk.error
+    if exectest lsblk ; then
+      lsblk -o +LABEL,PARTLABEL,UUID,FSTYPE,SERIAL > ./lsblk 2>./lsblk.error
+      # json output is supported since util-linux v2.33.1:
+      if lsblk --help | grep -q 'json' ; then
+        lsblk -o +LABEL,PARTLABEL,UUID,FSTYPE,SERIAL --json > ./json/lsblk 2>./json/lsblk.error
+      fi
+    fi
+
+    # ZFS
+    if exectest zpool; then
+      if [ -n "$(zpool list -H -o name)" ]; then
+        if ! $_opt_quiet ; then
+          echo "Reading ZFS data... this might take a while."
+        fi
+        mkdir -p ./zfs
+        for pool in $(zpool list -H -o name); do
+          # for a quick overview
+          zpool list -vPL "$pool" > ./zfs/"$pool".list 2> ./zfs/"$pool".list.error &
+          zpool status -vtiP "$pool" > ./zfs/"$pool".status 2> ./zfs/"$pool".status.error &
+          zpool iostat -rp "$pool" > ./zfs/"$pool".histogram 2> ./zfs/"$pool".histogram.error &
+          zfs list -o space,referenced,logicalreferenced,quota,refquota -t filesystem,volume -r "$pool" > ./zfs/"$pool".zfslist 2> ./zfs/"$pool".zfslist.error &
+          # machine parsable data
+          zpool get -Hp all "$pool" > ./zfs/"$pool".props 2> ./zfs/"$pool".props.error &
+          zfs get -Hp all "$pool" > ./zfs/"$pool".zfsprops 2> ./zfs/"$pool".zfsprops.error &
+        done
+        arc_summary --raw --alternate > ./zfs/arc_summary 2> ./zfs/arc_summary.error &
+        wait
+        if ! $_opt_quiet ; then
+          echo "Finished reading ZFS data."
+        fi
+      fi
+    fi
 
     # iSCSI
     if exectest iscsiadm ; then
@@ -431,9 +527,16 @@ cd "${OUTDIR}" || exit 1
       lsscsi -t > ./lsscsi_transport 2>./lsscsi_transport.error
     fi
 
+    # NVMe
+    nvme_info
+
     for disk in $disklist; do
       if exectest sfdisk && [[ -b "/dev/${disk}" ]] ; then
         sfdisk -d "/dev/${disk}" > "./sfdisk_${disk}" 2>"./sfdisk_${disk}.error"
+        # json output is supported since util-linux v2.29.2:
+        if sfdisk --help | grep -q 'json' ; then
+          sfdisk -d "/dev/${disk}" --json > ./json/sfdisk_"${disk}" 2>./json/sfdisk_"${disk}".error
+        fi
       fi
 
       if exectest smartctl ; then
@@ -456,14 +559,16 @@ cd "${OUTDIR}" || exit 1
 
       if exectest parted ; then
         echo -e "parted -s /dev/${disk}:\n" >> parted
-        parted -s "/dev/$disk" print >> ./parted
+        parted -s "/dev/$disk" print >> ./parted 2>> ./parted.error
         echo -e "\n\n" >> parted
       fi
 
       if exectest sdparm ; then
         echo -e "sdparm --all --long /dev/${disk}:\n" >> sdparm
-        sdparm --all --long "/dev/$disk" >> ./sdparm
+        echo -e "stderr for sdparm --all --long /dev/${disk}:\n" >> sdparm.error
+        sdparm --all --long "/dev/$disk" >> ./sdparm 2>> ./sdparm.error
         echo -e "\n\n" >> sdparm
+        echo -e "\n\n" >> sdparm.error
       fi
 
       if exectest sg_inq ; then

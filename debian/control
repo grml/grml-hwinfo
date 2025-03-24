@@ -1,41 +1,44 @@
 Source: grml-hwinfo
 Section: admin
 Priority: optional
-Maintainer: Michael Prokop <mika@grml.org>
+Maintainer: Grml Team <team@grml.org>
+Uploaders:
+ Michael Prokop <mika@debian.org>,
+ Chris Hofstaedtler <zeha@debian.org>,
 Build-Depends:
- debhelper-compat (= 12),
-Standards-Version: 4.5.0
-Homepage: https://git.grml.org/?p=grml-hwinfo.git
-Vcs-git: git://git.grml.org/grml-hwinfo.git
-Vcs-Browser: https://git.grml.org/?p=grml-hwinfo.git
-Origin: Grml
-Bugs: mailto:bugs@grml.org
+ debhelper-compat (= 13),
+Standards-Version: 4.7.0
+Homepage: https://github.com/grml/grml-hwinfo
+Vcs-Git: https://github.com/grml/grml-hwinfo.git
+Vcs-Browser: https://github.com/grml/grml-hwinfo
+Rules-Requires-Root: no
+X-Style: black
 
 Package: grml-hwinfo
 Architecture: all
 Depends:
  sysfsutils,
  ${misc:Depends},
-Recommends:
+ ${perl:Depends},
+Suggests:
  acpi,
  acpica-tools,
  cpuid,
- dconf,
  dmidecode,
  dmsetup,
  edac-utils,
  hdparm,
  hwinfo,
  i2c-tools,
- iproute2 | iproute,
+ iproute2,
  laptop-detect,
  lsscsi,
  lvm2,
- mcelog,
  mdadm,
  mokutil,
  net-tools,
  numactl,
+ nvme-cli,
  open-iscsi,
  parted,
  powermgmt-base,
@@ -46,7 +49,6 @@ Recommends:
  x11-utils,
  x11-xserver-utils,
  x86info,
- xresprobe,
 Description: collect hardware information
  This tool collects information of the hardware this tool is
  being executed on. It can be executed as normal user to collect

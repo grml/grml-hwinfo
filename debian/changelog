@@ -1,3 +1,84 @@
+grml-hwinfo (0.18.7) unstable; urgency=medium
+
+  * [ae3a001] d/control: remove old Suggests: iproute alternative
+
+ -- Chris Hofstaedtler <ch@grml.org>  Mon, 24 Mar 2025 11:15:32 +0100
+
+grml-hwinfo (0.18.6) unstable; urgency=medium
+
+  * [686c0b5] Add minimal GitHub Actions build workflow
+
+ -- Chris Hofstaedtler <ch@grml.org>  Tue, 04 Mar 2025 23:40:23 +0100
+
+grml-hwinfo (0.18.5) unstable; urgency=medium
+
+  * Source-only upload for Debian main.
+
+ -- Chris Hofstaedtler <ch@grml.org>  Mon, 10 Feb 2025 14:48:39 +0100
+
+grml-hwinfo (0.18.4) unstable; urgency=medium
+
+  * [44df65d] Use dh sequencer to build
+  * [390ccda] Downgrade all Recommends to Suggests
+  * [94a394c] Update debian/copyright
+  * [9bf4246] d/control: set X-Style: black
+  * [f69c250] Prepare packaging for Debian main
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Tue, 07 Jan 2025 18:31:50 +0100
+
+grml-hwinfo (0.18.3) unstable; urgency=medium
+
+  * [ecfa811] Remove mcelog invocations
+  * [c5dceab] Remove xresprobe from Recommends:
+  * [c8aaa32] Remove dconf from Recommends:
+
+ -- Chris Hofstaedtler <ch@grml.org>  Mon, 06 Jan 2025 00:21:09 +0100
+
+grml-hwinfo (0.18.2) unstable; urgency=medium
+
+  [ Christopher Bock ]
+  * [f3ff314] Retrieve ZFS related data
+  * [3c9426e] Removed ZDB call, use subfolder zfs and run in parallel.
+  * [58b0020] Change filenames, lists for humans, props for machines..
+
+  [ Darshaka Pathirana ]
+  * [f87c840] grml-hwinfo: Update inxi output
+  * [5c91ada] Improve lsblk output
+
+  [ Michael Prokop ]
+  * [8ad823d] lsblk: improve output also for json version
+
+ -- Chris Hofstaedtler <ch@grml.org>  Fri, 22 Nov 2024 23:12:39 +0100
+
+grml-hwinfo (0.18.1) unstable; urgency=medium
+
+  [ Chris Hofstaedtler ]
+  * [6c82d30] debian: update Vcs-Git and Vcs-Browser
+
+  [ Michael Prokop ]
+  * [0ec89ca] Ship debian/gbp.conf for gbp usage
+  * [6415471] debian: Bump Standards-Version to 4.7.0
+
+ -- Michael Prokop <mika@grml.org>  Fri, 22 Nov 2024 13:28:13 +0100
+
+grml-hwinfo (0.18.0) unstable; urgency=medium
+
+  * [5f91136] Log stderr of sdparm to file sdparm.error
+  * [f129f21] Collect json output of lscpu + lsblk in "json" sub-directory
+  * [77fbbb5] Collect output of findmnt in "findmnt" and its json version
+    in "json/findmnt"
+  * [b4e7d9b] Collect output of losetup -a in file "losetup" and its json
+    version in "json/losetup"
+  * [52436a1] Collect JSON output of sfdisk in ./json/sfdisk_*
+  * [6bfd6dd] Retrieve generic information about NVMe disks
+  * [8293591] Redirect stderr of parted to file parted.error
+  * [bbfd3b1] Redirect stderr of lspci invocations to separate files.
+    Thanks to Darshaka Pathirana for the bug report
+  * [2801c01] Reduce execution time by ~60% by dropping dpkg call to get
+    kernel information
+
+ -- Michael Prokop <mika@grml.org>  Mon, 05 Aug 2024 14:04:33 +0200
+
 grml-hwinfo (0.17.1) unstable; urgency=medium
 
   [ Darshaka Pathirana ]

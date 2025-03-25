@@ -540,6 +540,9 @@ cd "${OUTDIR}" || exit 1
         echo -e "smartctl -a /dev/${disk}:\n" >> smartctl
         smartctl -a "/dev/$disk" >> ./smartctl
         echo -e "\n\n" >> ./smartctl
+        echo -e "[" >> ./json/smartctl
+        smartctl -x -j "/dev/$disk" >> ./json/smartctl
+        echo -e "]" >> ./json/smartctl
       fi
 
       if exectest hdparm ; then

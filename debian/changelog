@@ -1,3 +1,10 @@
+grml-hwinfo (0.18.8) unstable; urgency=medium
+
+  [ Christopher Bock ]
+  * [551f7c7] Collect output of smartctl in JSON format in "json/smartctl"
+
+ -- Michael Prokop <mika@grml.org>  Wed, 14 May 2025 13:17:01 +0200
+
 grml-hwinfo (0.18.7) unstable; urgency=medium
 
   * [ae3a001] d/control: remove old Suggests: iproute alternative

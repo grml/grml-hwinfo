@@ -496,10 +496,14 @@ cd "${OUTDIR}" || exit 1
           zpool list -vPL "$pool" > ./zfs/"$pool".list 2> ./zfs/"$pool".list.error &
           zpool status -vtiP "$pool" > ./zfs/"$pool".status 2> ./zfs/"$pool".status.error &
           zpool iostat -rp "$pool" > ./zfs/"$pool".histogram 2> ./zfs/"$pool".histogram.error &
-          zfs list -o space,referenced,logicalreferenced,quota,refquota -t filesystem,volume -r "$pool" > ./zfs/"$pool".zfslist 2> ./zfs/"$pool".zfslist.error &
+          zfs list -o space,referenced,logicalreferenced,quota,refquota \
+            -t filesystem,volume -r "$pool" > ./zfs/"$pool".zfslist 2> ./zfs/"$pool".zfslist.error &
           # machine parsable data
-          zpool get -Hp all "$pool" > ./zfs/"$pool".props 2> ./zfs/"$pool".props.error &
-          zfs get -Hp all "$pool" > ./zfs/"$pool".zfsprops 2> ./zfs/"$pool".zfsprops.error &
+          zpool get -p all "$pool" > ./zfs/"$pool".props 2> ./zfs/"$pool".props.error &
+          zfs get -p all -t filesystem,volume -r "$pool" > ./zfs/"$pool".zfsprops 2> ./zfs/"$pool".zfsprops.error &
+          # additional json dumps
+          zpool get all --json --json-int "$pool" > ./json/zpool."$pool" 2> ./json/zpool."$pool".error &
+          zfs get all --json --json-int -t filesystem,volume -r "$pool" > ./json/zfs."$pool" 2> ./json/zfs."$pool".error &
         done
         arc_summary --raw --alternate > ./zfs/arc_summary 2> ./zfs/arc_summary.error &
         wait

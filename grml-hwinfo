@@ -398,6 +398,10 @@ cd "${OUTDIR}" || exit 1
   fi
   [ -r /proc/apm/ ] && apm > ./apm
 
+  if exectest upower ; then
+    upower --dump >./upower_dump 2>./upower_dump.error
+  fi
+
   # kernel stuff
   if [ -r /proc/config.gz ] ; then
     zcat /proc/config.gz > kernelconfig

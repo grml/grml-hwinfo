@@ -1,3 +1,9 @@
+grml-hwinfo (0.18.10) unstable; urgency=medium
+
+  * [d1c332b] Collect output of "upower --dump" in file "upower_dump"
+
+ -- Michael Prokop <mika@grml.org>  Thu, 27 Nov 2025 08:24:23 +0100
+
 grml-hwinfo (0.18.9) unstable; urgency=medium
 
   [ Christopher Bock ]

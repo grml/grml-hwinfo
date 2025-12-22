@@ -1,3 +1,9 @@
+grml-hwinfo (1.8.11) unstable; urgency=medium
+
+  * No-change rebuild to remove arch:all binary.
+
+ -- Chris Hofstaedtler <ch@grml.org>  Mon, 22 Dec 2025 13:33:00 +0100
+
 grml-hwinfo (0.18.10) unstable; urgency=medium
 
   * [d1c332b] Collect output of "upower --dump" in file "upower_dump"

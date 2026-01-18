@@ -509,7 +509,8 @@ cd "${OUTDIR}" || exit 1
           zpool get all --json --json-int "$pool" > ./json/zpool."$pool" 2> ./json/zpool."$pool".error &
           zfs get all --json --json-int -t filesystem,volume -r "$pool" > ./json/zfs."$pool" 2> ./json/zfs."$pool".error &
         done
-        arc_summary --raw --alternate > ./zfs/arc_summary 2> ./zfs/arc_summary.error &
+        arcsum=$(command -v arc_summary || command -v zarcsummary)
+        $arcsum --raw --alternate > ./zfs/arc_summary 2> ./zfs/arc_summary.error &
         wait
         if ! $_opt_quiet ; then
           echo "Finished reading ZFS data."

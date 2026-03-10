@@ -32,6 +32,7 @@ Suggests:
  i2c-tools,
  iproute2,
  laptop-detect,
+ linux-cpupower,
  lsscsi,
  lvm2,
  mdadm,

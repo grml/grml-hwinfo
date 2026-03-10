@@ -345,7 +345,7 @@ cd "${OUTDIR}" || exit 1
   if exectest ethtool ; then
     get_network_devices
     for dev in "${niclist[@]}" ; do
-      ethtool          "${dev}" > ethtool_"${dev}"
+      ethtool          "${dev}" > ethtool_"${dev}" 2>ethtool_"${dev}".error
       case "${dev}" in
         "lo")
           # skip the loopback device, `ethtool --driver lo` fails with:

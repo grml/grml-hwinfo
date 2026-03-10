@@ -334,6 +334,17 @@ cd "${OUTDIR}" || exit 1
     fi
   fi
 
+  # linux-cpupower:
+  if exectest cpupower ; then
+    cpupower frequency-info > cpupower_frequency-info
+    cpupower idle-info > cpupower_idle-info
+    cpupower powercap-info > cpupower_powercap-info
+    # NOTE: e.g. Intel's performance bias setting needs root privileges,
+    # so information might be incomplete here, but we can still run
+    # it as normal user
+    cpupower info > cpupower_info
+  fi
+
   # EFI
   exectest efibootmgr && efibootmgr -v >efibootmgr 2>efibootmgr.error
 

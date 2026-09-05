@@ -484,10 +484,22 @@ cd "${OUTDIR}" || exit 1
     exectest mdadm && mdadm --detail /dev/md[0-9]* >> ./mdadm 2>./mdadm.error
 
     # LVM
-    exectest pvs && pvs > ./pvs 2>./pvs.error
-    exectest vgs && vgs > ./vgs 2>./vgs.error
-    exectest lvs && lvs > ./lvs 2>./lvs.error
-    exectest lvdisplay && lvdisplay > ./lvdisplay 2>./lvdisplay.error
+    exectest pvs && (
+      pvs > ./pvs 2>./pvs.error
+      pvs --reportformat json_std > ./json/pvs 2>./json/pvs.error
+    )
+    exectest vgs && (
+      vgs > ./vgs 2>./vgs.error
+      vgs --reportformat json_std > ./json/vgs 2>./json/vgs.error
+    )
+    exectest lvs && (
+      lvs > ./lvs 2>./lvs.error
+      lvs --reportformat json_std > ./json/lvs 2>./json/lvs.error
+    )
+    exectest lvdisplay && (
+      lvdisplay > ./lvdisplay 2>./lvdisplay.error
+      lvdisplay --reportformat json_std > ./json/lvdisplay 2>./json/lvdisplay.error
+    )
 
     exectest dmsetup && dmsetup ls > dmsetup_ls 2>dmsetup_ls.error
     exectest dmsetup && dmsetup ls --tree > dmsetup_ls_tree 2>dmsetup_ls_tree.error

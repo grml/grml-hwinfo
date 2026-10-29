@@ -69,16 +69,23 @@ sub dump_value($$)
 			/.*\/clear$/ ||
 			/.*\/delete$/ ||
 			/.*\/delete_device$/ ||
+			/.*\/demote$/ ||
 			/.*\/drivers_probe$/ ||
+			/.*\/eject$/ ||
+			/.*\/flush$/ ||
 			/.*\/host_reset$/ ||
 			/.*\/new_device$/ ||
 			/.*\/new_id$/ ||
+			/.*\/reclaim$/ ||
 			/.*\/reconfig$/ ||
 			/.*\/remove$/ ||
 			/.*\/remove_id$/ ||
 			/.*\/rescan$/ ||
 			/.*\/reset$/ ||
+			/.*\/reset_subordinate$/ ||
+			/.*\/resource[0-9]+(_wc)?$/ ||
 			/.*\/scan$/ ||
+			/.*\/uevent$/ ||
 			/\/sys\/class\/gpio\/export$/ ||
 			/\/sys\/class\/gpio\/unexport$/ ||
 			/\/sys\/devices\/platform\/i8042\/serio[0-9]+\/drvctl$/ ||
@@ -90,11 +97,7 @@ sub dump_value($$)
 			/\/sys\/devices\/virtual\/graphics\/fbcon\/rotate_all$/ ||
 			/\/sys\/firmware\/efi\/vars\/del_var$/ ||
 			/\/sys\/firmware\/efi\/vars\/new_var$/ ||
-			/\/sys\/kernel\/debug\/.*/ ||
 			/\/sys\/kernel\/security\/apparmor\/revision$/ ||
-			/\/sys\/kernel\/tracing\/per_cpu\/cpu[0-9]+\/snapshot_raw$/ ||
-			/\/sys\/kernel\/tracing\/per_cpu\/cpu[0-9]+\/trace_pipe.*/ ||
-			/\/sys\/kernel\/tracing\/trace_pipe/ ||
 			/\/sys\/module\/md_mod\/parameters\/new_array$/ ||
 			/.*\/unbind$/
 		) && do {
@@ -116,6 +119,13 @@ sub dump_value($$)
 	chomp $value;
 	close FILE;
 
+	# binary sysfs attributes (PCI config, rom, edid, descriptors, ACPI tables,...)
+	# contain NUL bytes and might be huge, don't dump them raw
+	if ($value =~ /\0/) {
+		print $file, " = <binary, ", length($value), " bytes>\n";
+		return 0;
+	}
+
 	#print " "x$level;
 	print $file, " = '", $value, "'\n";
 }
@@ -124,6 +134,13 @@ sub dump_entry($$)
 {
 	my $level = shift;
 	my $file = shift;
+
+	# directories we don't descend into (huge and not hardware related)
+	if (-d $file && !-l $file &&
+		$file =~ m{^/sys/kernel/(tracing|debug)$}) {
+		print "ignoring directory $file\n";
+		return 0;
+	}
 
 	return dump_link($level, $file) if -l $file;
 	return dump_dir($level, $file) if -d $file;

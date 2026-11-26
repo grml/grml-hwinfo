@@ -1,3 +1,14 @@
+grml-hwinfo (1.9.0) unstable; urgency=medium
+
+  [ Christopher Bock ]
+  * [31fbf7b] LVM: Add additional json dumps
+
+  [ Michael Prokop ]
+  * [989cfd7] sysdump: skip binary attributes, tracing/debug trees +
+    more trigger files
+
+ -- Michael Prokop <mika@grml.org>  Thu, 26 Nov 2026 11:57:18 +0100
+
 grml-hwinfo (1.8.13) unstable; urgency=medium
 
   [ Michael Prokop ]
